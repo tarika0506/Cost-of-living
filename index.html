@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndiaLifeCostIQ - AI Powered Household Financial Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+       
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+       
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            min-height: 100vh;
+        }
+       
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+       
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+       
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+       
+        .sidebar-item:hover, .sidebar-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 4px solid #3b82f6;
+        }
+       
+        .gradient-text {
+            background-clip: text;       /* Standard property */
+    -webkit-background-clip: text; /* Vendor prefix for older browsers */
+    color: transparent;
+        }
+       
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+       
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+       
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.1);
+        }
+       
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+       
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+       
+        .metric-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+        }
+       
+        .chat-message {
+            animation: slideIn 0.3s ease;
+        }
+       
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+       
+        .typing-indicator span {
+            animation: typing 1.4s infinite;
+        }
+       
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+       
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+       
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 100px;
+        }
+       
+        .risk-low { color: #10b981; }
+        .risk-medium { color: #f59e0b; }
+        .risk-high { color: #ef4444; }
+       
+        .emi-stress-low { background: #10b981; }
+        .emi-stress-medium { background: #f59e0b; }
+        .emi-stress-high { background: #ef4444; }
+       
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+       
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+       
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+       
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+       
+        .city-comparison-row:nth-child(even) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        /* ... all your existing code (body, glass-card, etc.) ... */
+
+        .city-comparison-row:nth-child(even) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* --- ADD THE NEW CODE BELOW THIS LINE --- */
+
+        /* This fixes the invisible text in the dropdown */
+        .input-field option {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        /* This tells the browser (Chrome/Safari/Edge) to use dark mode for system menus */
+        select.input-field {
+            color-scheme: dark;
+        }
+    </style>
+    </style>
+</head>
+<body class="text-gray-100 overflow-x-hidden">
+    <!-- Authentication Pages -->
+    <div id="auth-container" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Login Form -->
+            <div id="login-form" class="glass-card rounded-2xl p-8 fade-in">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-2xl text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold gradient-text mb-2">IndiaLifeCostIQ</h1>
+                    <p class="text-gray-400 text-sm">AI Powered Financial Intelligence</p>
+                </div>
+               
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-gray-300">Email</label>
+                        <input type="email" id="login-email" class="input-field w-full px-4 py-3 rounded-lg" placeholder="Enter your email" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-gray-300">Password</label>
+                        <input type="password" id="login-password" class="input-field w-full px-4 py-3 rounded-lg" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold text-white">
+                        Sign In
+                    </button>
+                </form>
+               
+                <div class="mt-6 text-center">
+                    <p class="text-gray-400 text-sm">Don't have an account?
+                        <button onclick="toggleAuth('signup')" class="text-blue-400 hover:text-blue-300 font-medium">Sign Up</button>
+                    </p>
+                </div>
+            </div>
+           
+            <!-- Signup Form -->
+            <div id="signup-form" class="glass-card rounded-2xl p-8 hidden fade-in">
+    <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user-plus text-2xl text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold gradient-text">Create Account</h1>
+    </div>
+
+    <form onsubmit="handleSignup(event)" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1 text-gray-300">Name</label>
+                <input type="text" id="signup-name" class="input-field w-full px-3 py-2 rounded-lg text-sm" placeholder="Full name" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1 text-gray-300">Age</label>
+                <input type="number" id="signup-age" class="input-field w-full px-3 py-2 rounded-lg text-sm" placeholder="Age" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium mb-1 text-gray-300">Current City</label>
+                <select id="signup-city" class="input-field w-full px-3 py-2 rounded-lg text-sm" required>
+                    <option value="" disabled selected>-- Select City --</option>
+                    <optgroup label="Metro Cities">
+                        <option value="mumbai">Mumbai</option>
+                        <option value="delhi">Delhi</option>
+                        <option value="bangalore">Bangalore</option>
+                        <option value="chennai">Chennai</option>
+                        <option value="hyderabad">Hyderabad</option>
+                        <option value="kolkata">Kolkata</option>
+                    </optgroup>
+                    <optgroup label="Tier 2 Cities">
+                        <option value="pune">Pune</option>
+                        <option value="ahmedabad">Ahmedabad</option>
+                        <option value="jaipur">Jaipur</option>
+                        <option value="surat">Surat</option>
+                        <option value="lucknow">Lucknow</option>
+                        <option value="chandigarh">Chandigarh</option>
+                        <option value="coimbatore">Coimbatore</option>
+                        <option value="kochi">Kochi</option>
+                        <option value="indore">Indore</option>
+                        <option value="nagpur">Nagpur</option>
+                        <option value="bhopal">Bhopal</option>
+                        <option value="visakhapatnam">Visakhapatnam</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1 text-gray-300">Annual Salary</label>
+                <input type="number" id="signup-salary" class="input-field w-full px-3 py-2 rounded-lg text-sm" placeholder="INR" required>
+            </div>
+        </div>
+
+        <!-- City selected — full details will load inside the app after sign-up -->
+
+        <div>
+            <label class="block text-sm font-medium mb-1 text-gray-300">Gender</label>
+            <select id="signup-gender" class="input-field w-full px-3 py-2 rounded-lg text-sm">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium mb-1 text-gray-300">Email</label>
+            <input type="email" id="signup-email" class="input-field w-full px-3 py-2 rounded-lg text-sm" placeholder="Email address" required>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium mb-1 text-gray-300">Password</label>
+            <input type="password" id="signup-password" class="input-field w-full px-3 py-2 rounded-lg text-sm" placeholder="Create password" required>
+        </div>
+
+        <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold text-white">
+            Create Account
+        </button>
+    </form>
+
+    <div class="mt-4 text-center">
+        <p class="text-gray-400 text-sm">Already have an account?
+            <button onclick="toggleAuth('login')" class="text-blue-400 hover:text-blue-300 font-medium">Sign In</button>
+        </p>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <!-- Main Application Dashboard -->
+    <div id="app-container" class="hidden min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 glass-card fixed h-full z-50 overflow-y-auto scroll-hide hidden md:block">
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-lg gradient-text">LifeCostIQ</h2>
+                        <p class="text-xs text-gray-400">AI Financial Platform</p>
+                    </div>
+                </div>
+            </div>
+           
+            <nav class="p-4 space-y-1">
+                <button onclick="navigateTo('dashboard')" class="sidebar-item active w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-home text-blue-400"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button onclick="navigateTo('expense-analyzer'); populateExpenseAnalyzer()" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-calculator text-green-400"></i>
+                    <span>Expense Analyzer</span>
+                </button>
+                <button onclick="navigateTo('emi-manager')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-university text-purple-400"></i>
+                    <span>EMI Manager</span>
+                </button>
+                <button onclick="navigateTo('weekly-report')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-calendar-week text-yellow-400"></i>
+                    <span>Weekly Report</span>
+                </button>
+                <button onclick="navigateTo('monthly-report')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-file-invoice-dollar text-red-400"></i>
+                    <span>Monthly Report</span>
+                </button>
+                <button onclick="navigateTo('city-comparison')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-city text-indigo-400"></i>
+                    <span>City Comparison</span>
+                </button>
+                <button onclick="navigateTo('forecast-lab')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-flask text-pink-400"></i>
+                    <span>Forecast Lab</span>
+                </button>
+                <button onclick="navigateTo('ai-assistant')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-robot text-cyan-400"></i>
+                    <span>AI Assistant</span>
+                </button>
+                <div class="border-t border-gray-700 my-4"></div>
+                <button onclick="navigateTo('profile')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left">
+                    <i class="fas fa-user text-gray-400"></i>
+                    <span>Profile</span>
+                </button>
+                <button onclick="logout()" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-red-400 hover:text-red-300">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Mobile Header -->
+        <div class="md:hidden fixed top-0 left-0 right-0 glass-card z-50 p-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line text-white text-sm"></i>
+                </div>
+                <span class="font-bold gradient-text">LifeCostIQ</span>
+            </div>
+            <button onclick="toggleMobileMenu()" class="text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-gray-900 bg-opacity-95 md:hidden pt-16">
+            <div class="p-4 space-y-2">
+                <button onclick="navigateTo('dashboard'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">Dashboard</button>
+                <button onclick="navigateTo('expense-analyzer'); toggleMobileMenu(); populateExpenseAnalyzer()" class="w-full glass-card p-4 rounded-lg text-left">Expense Analyzer</button>
+                <button onclick="navigateTo('emi-manager'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">EMI Manager</button>
+                <button onclick="navigateTo('weekly-report'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">Weekly Report</button>
+                <button onclick="navigateTo('monthly-report'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">Monthly Report</button>
+                <button onclick="navigateTo('city-comparison'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">City Comparison</button>
+                <button onclick="navigateTo('forecast-lab'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">Forecast Lab</button>
+                <button onclick="navigateTo('ai-assistant'); toggleMobileMenu()" class="w-full glass-card p-4 rounded-lg text-left">AI Assistant</button>
+                <button onclick="logout()" class="w-full glass-card p-4 rounded-lg text-left text-red-400">Logout</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto">
+            <!-- Welcome Header -->
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 id="welcome-message" class="text-3xl font-bold text-white mb-1">Hi there 👋</h1>
+                    <p class="text-gray-400">Welcome back to your financial dashboard</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="glass-card px-4 py-2 rounded-lg flex items-center gap-2">
+                        <i class="fas fa-wallet text-green-400"></i>
+                        <span id="header-balance" class="font-semibold">₹0</span>
+                    </div>
+                    <button onclick="navigateTo('profile')" class="w-10 h-10 glass-card rounded-full flex items-center justify-center hover:bg-blue-500/20 transition">
+                        <i class="fas fa-user text-blue-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="space-y-6 fade-in">
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-card metric-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Monthly Income</p>
+                                <h3 id="dash-income" class="text-2xl font-bold text-white">₹0</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-up text-green-400"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs text-green-400">+0% from last month</div>
+                    </div>
+                   
+                    <div class="glass-card metric-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Monthly Expense</p>
+                                <h3 id="dash-expense" class="text-2xl font-bold text-white">₹0</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                            </div>
+                        </div>
+                        <div class="text-xs text-red-400">Based on current city</div>
+                    </div>
+                   
+                    <div class="glass-card metric-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Total EMI</p>
+                                <h3 id="dash-emi" class="text-2xl font-bold text-white">₹0</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-university text-purple-400"></i>
+                            </div>
+                        </div>
+                        <div id="dash-emi-ratio" class="text-xs text-purple-400">0% of income</div>
+                    </div>
+                   
+                    <div class="glass-card metric-card rounded-xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Monthly Savings</p>
+                                <h3 id="dash-savings" class="text-2xl font-bold text-white">₹0</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-piggy-bank text-blue-400"></i>
+                            </div>
+                        </div>
+                        <div id="dash-savings-pct" class="text-xs text-blue-400">0% savings rate</div>
+                    </div>
+                </div>
+
+                <!-- Secondary Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-card rounded-xl p-6">
+                        <p class="text-gray-400 text-sm mb-2">Life Cost Index (LCI)</p>
+                        <div class="flex items-end gap-2">
+                            <h3 id="dash-lci" class="text-3xl font-bold gradient-text">0</h3>
+                            <span class="text-xs text-gray-400 mb-1">Expense/Income × 100</span>
+                        </div>
+                        <div class="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div id="lci-bar" class="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                   
+                    <div class="glass-card rounded-xl p-6">
+                        <p class="text-gray-400 text-sm mb-2">Financial Health Score</p>
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-20 h-20">
+                                <canvas id="health-gauge"></canvas>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span id="health-score" class="text-lg font-bold">0</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="health-status" class="text-sm font-medium">Unknown</div>
+                                <div class="text-xs text-gray-400">Based on EMI & Savings</div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="glass-card rounded-xl p-6">
+                        <p class="text-gray-400 text-sm mb-2">Risk Classification</p>
+                        <div id="risk-badge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-700 text-sm">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Not Calculated</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-3">Update expense data to see risk analysis</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Expense Breakdown</h3>
+                        <div class="chart-container">
+                            <canvas id="expense-pie-chart"></canvas>
+                        </div>
+                    </div>
+                   
+                    <div class="glass-card rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Income vs Expense</h3>
+                        <div class="chart-container">
+                            <canvas id="income-expense-bar"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="glass-card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button onclick="navigateTo('expense-analyzer')" class="glass-card p-4 rounded-lg hover:bg-blue-500/20 transition text-center">
+                            <i class="fas fa-calculator text-2xl text-blue-400 mb-2"></i>
+                            <p class="text-sm">Analyze Expenses</p>
+                        </button>
+                        <button onclick="navigateTo('emi-manager')" class="glass-card p-4 rounded-lg hover:bg-purple-500/20 transition text-center">
+                            <i class="fas fa-plus text-2xl text-purple-400 mb-2"></i>
+                            <p class="text-sm">Add EMI</p>
+                        </button>
+                        <button onclick="navigateTo('city-comparison')" class="glass-card p-4 rounded-lg hover:bg-indigo-500/20 transition text-center">
+                            <i class="fas fa-exchange-alt text-2xl text-indigo-400 mb-2"></i>
+                            <p class="text-sm">Compare Cities</p>
+                        </button>
+                        <button onclick="navigateTo('ai-assistant')" class="glass-card p-4 rounded-lg hover:bg-cyan-500/20 transition text-center">
+                            <i class="fas fa-robot text-2xl text-cyan-400 mb-2"></i>
+                            <p class="text-sm">Ask AI</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expense Analyzer View -->
+            <div id="view-expense-analyzer" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+                        <h2 class="text-2xl font-bold gradient-text">Expense Analyzer</h2>
+                        <div id="city-info-banner" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-sm text-blue-300">
+                            <i class="fas fa-map-marker-alt text-blue-400"></i>
+                            <span>Showing costs for: <strong id="city-info-name" class="text-white capitalize">—</strong></span>
+                        </div>
+                    </div>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Select City</label>
+                            <select id="exp-city" class="input-field w-full px-4 py-3 rounded-lg" onchange="updateExpenseAnalysis()">
+                                <option value="mumbai">Mumbai</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="pune">Pune</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Family Members</label>
+                            <input type="number" id="exp-family" class="input-field w-full px-4 py-3 rounded-lg" min="1" onchange="updateExpenseAnalysis()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Number of Kids</label>
+                            <input type="number" id="exp-kids" class="input-field w-full px-4 py-3 rounded-lg" min="0" onchange="updateExpenseAnalysis()">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Lifestyle Type</label>
+                            <select id="exp-lifestyle" class="input-field w-full px-4 py-3 rounded-lg"  onchange="updateExpenseAnalysis()">
+                                //<option value="" disabled selected>Select Lifestyle</option>
+                                <option value="basic">Basic</option>
+                                <option value="medium" >Medium</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Rent Location</label>
+                            <select id="exp-rent-location" class="input-field w-full px-4 py-3 rounded-lg" onchange="updateExpenseAnalysis()">
+                                //<option value="" disabled selected>Select Location</option>
+                                <option value="inside">Inside City Center</option>
+                                <option value="outside">Outside Center</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Transport Mode</label>
+                            <select id="exp-transport" class="input-field w-full px-4 py-3 rounded-lg" onchange="updateExpenseAnalysis()">
+                                //<option value="" disabled selected>Select Transport</option>
+                                <option value="public">Public Transport</option>
+                                <option value="private">Private Vehicle</option>
+                                <option value="mixed">Mixed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Food & Groceries -->
+                        <div class="glass-card rounded-lg p-4">
+                            <h4 class="font-semibold mb-4 flex items-center gap-2">
+                                <i class="fas fa-utensils text-green-400"></i>
+                                Food & Groceries (Monthly)
+                            </h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center">
+                                    <span>Milk (1L/day)</span>
+                                    <input type="number" id="food-milk" class="input-field w-24 px-2 py-1 rounded text-right" value="30" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Bread ( loaf)</span>
+                                    <input type="number" id="food-bread" class="input-field w-24 px-2 py-1 rounded text-right" value="20" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Rice (5kg)</span>
+                                    <input type="number" id="food-rice" class="input-field w-24 px-2 py-1 rounded text-right" value="4" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Eggs (dozen)</span>
+                                    <input type="number" id="food-eggs" class="input-field w-24 px-2 py-1 rounded text-right" value="8" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Chicken (1kg)</span>
+                                    <input type="number" id="food-chicken" class="input-field w-24 px-2 py-1 rounded text-right" value="4" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Vegetables (weekly)</span>
+                                    <input type="number" id="food-veg" class="input-field w-24 px-2 py-1 rounded text-right" value="12" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Fruits (weekly)</span>
+                                    <input type="number" id="food-fruit" class="input-field w-24 px-2 py-1 rounded text-right" value="8" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Water (1.5L/day)</span>
+                                    <input type="number" id="food-water" class="input-field w-24 px-2 py-1 rounded text-right" value="30" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Restaurant meals</span>
+                                    <input type="number" id="food-restaurant" class="input-field w-24 px-2 py-1 rounded text-right" value="8" onchange="updateExpenseAnalysis()">
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Coffee/Cappuccino</span>
+                                    <input type="number" id="food-coffee" class="input-field w-24 px-2 py-1 rounded text-right" value="15" onchange="updateExpenseAnalysis()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Housing & Others -->
+                        <div class="space-y-4">
+                            <div class="glass-card rounded-lg p-4">
+    <h4 class="font-semibold mb-4 flex items-center gap-2">
+        <i class="fas fa-home text-blue-400"></i>
+        Housing (Monthly)
+    </h4>
+    <div class="space-y-3 text-sm">
+        <div class="flex justify-between items-center">
+            <span id="rent-label">Rent (1BHK Apartment)</span>
+            <input type="number" id="housing-rent" class="input-field w-32 px-2 py-1 rounded text-right" onchange="updateExpenseAnalysis()">
+        </div>
+        <div class="flex justify-between items-center">
+            <span>Maintenance</span>
+            <input type="number" id="housing-maint" class="input-field w-32 px-2 py-1 rounded text-right" value="2000" onchange="updateExpenseAnalysis()">
+        </div>
+    </div>
+</div>
+
+                            <div class="glass-card rounded-lg p-4">
+                                <h4 class="font-semibold mb-4 flex items-center gap-2">
+                                    <i class="fas fa-bolt text-yellow-400"></i>
+                                    Utilities (Monthly)
+                                </h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between items-center">
+                                        <span>Electricity</span>
+                                        <input type="number" id="util-electric" class="input-field w-32 px-2 py-1 rounded text-right" value="2500" onchange="updateExpenseAnalysis()">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Water</span>
+                                        <input type="number" id="util-water" class="input-field w-32 px-2 py-1 rounded text-right" value="800" onchange="updateExpenseAnalysis()">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Internet/Phone</span>
+                                        <input type="number" id="util-internet" class="input-field w-32 px-2 py-1 rounded text-right" value="1500" onchange="updateExpenseAnalysis()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-card rounded-lg p-4">
+                                <h4 class="font-semibold mb-4 flex items-center gap-2">
+                                    <i class="fas fa-car text-red-400"></i>
+                                    Transport (Monthly)
+                                </h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between items-center">
+                                        <span>Public Transport Pass</span>
+                                        <input type="number" id="trans-public" class="input-field w-32 px-2 py-1 rounded text-right" value="1500" onchange="updateExpenseAnalysis()">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Fuel (if private)</span>
+                                        <input type="number" id="trans-fuel" class="input-field w-32 px-2 py-1 rounded text-right" value="3000" onchange="updateExpenseAnalysis()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Categories -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="glass-card rounded-lg p-4">
+                            <h4 class="font-semibold mb-3 flex items-center gap-2">
+                                <i class="fas fa-heartbeat text-red-400"></i>
+                                Healthcare
+                            </h4>
+                            <input type="number" id="exp-healthcare" class="input-field w-full px-3 py-2 rounded-lg" value="2000" onchange="updateExpenseAnalysis()">
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <h4 class="font-semibold mb-3 flex items-center gap-2">
+                                <i class="fas fa-graduation-cap text-indigo-400"></i>
+                                Education
+                            </h4>
+                            <input type="number" id="exp-education" class="input-field w-full px-3 py-2 rounded-lg" value="0" onchange="updateExpenseAnalysis()">
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <h4 class="font-semibold mb-3 flex items-center gap-2">
+                                <i class="fas fa-film text-pink-400"></i>
+                                Entertainment
+                            </h4>
+                            <input type="number" id="exp-entertainment" class="input-field w-full px-3 py-2 rounded-lg" value="3000" onchange="updateExpenseAnalysis()">
+                        </div>
+                    </div>
+
+                    <!-- Live Total -->
+                    <div class="glass-card rounded-xl p-6 mt-6 bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <p class="text-gray-400 text-sm">Estimated Monthly Expense</p>
+                                <h2 id="exp-total" class="text-4xl font-bold gradient-text">₹0</h2>
+                            </div>
+                            <div class="flex gap-4 text-sm">
+                                <div class="text-center">
+                                    <p class="text-gray-400">Food</p>
+                                    <p id="exp-total-food" class="font-semibold">₹0</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-gray-400">Housing</p>
+                                    <p id="exp-total-housing" class="font-semibold">₹0</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-gray-400">Transport</p>
+                                    <p id="exp-total-transport" class="font-semibold">₹0</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-gray-400">Others</p>
+                                    <p id="exp-total-others" class="font-semibold">₹0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveExpenses()" class="btn-primary w-full py-3 rounded-lg font-semibold mt-4">
+                        <i class="fas fa-save mr-2"></i>Save to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- EMI Manager View -->
+            <div id="view-emi-manager" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">EMI Manager</h2>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loan Type</label>
+                            <select id="emi-type" class="input-field w-full px-4 py-3 rounded-lg">
+                                <option value="home">Home Loan</option>
+                                <option value="car">Car Loan</option>
+                                <option value="personal">Personal Loan</option>
+                                <option value="education">Education Loan</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Principal Amount (₹)</label>
+                            <input type="number" id="emi-principal" class="input-field w-full px-4 py-3 rounded-lg" placeholder="e.g., 5000000">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Interest Rate (% per annum)</label>
+                            <input type="number" id="emi-rate" class="input-field w-full px-4 py-3 rounded-lg" placeholder="e.g., 8.5" step="0.1">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tenure (Years)</label>
+                            <input type="number" id="emi-tenure" class="input-field w-full px-4 py-3 rounded-lg" placeholder="e.g., 20">
+                        </div>
+                    </div>
+                   
+                    <button onclick="addEMI()" class="btn-primary w-full py-3 rounded-lg font-semibold mb-6">
+                        <i class="fas fa-plus mr-2"></i>Add EMI
+                    </button>
+
+                    <!-- EMI Summary -->
+                    <div class="glass-card rounded-xl p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <p class="text-gray-400 text-sm">Total Monthly EMI</p>
+                                <h3 id="emi-total-display" class="text-3xl font-bold text-white">₹0</h3>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-gray-400 text-sm">EMI Ratio</p>
+                                <h3 id="emi-ratio-display" class="text-3xl font-bold text-purple-400">0%</h3>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-gray-400 text-sm">Stress Indicator</p>
+                                <div id="emi-stress" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-700 mt-2">
+                                    <span class="w-3 h-3 rounded-full bg-gray-500"></span>
+                                    <span>No EMI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EMI List -->
+                    <div id="emi-list" class="space-y-4">
+                        <!-- EMI items will be added here dynamically -->
+                    </div>
+
+                    <!-- Debt Timeline Chart -->
+                    <div class="glass-card rounded-xl p-6 mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Debt-Free Timeline</h3>
+                        <div class="chart-container">
+                            <canvas id="emi-timeline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Report View -->
+            <div id="view-weekly-report" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">Weekly Report</h2>
+                   
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-xs">Weekly Income</p>
+                            <h4 id="week-income" class="text-xl font-bold text-green-400">₹0</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-xs">Weekly Expense</p>
+                            <h4 id="week-expense" class="text-xl font-bold text-red-400">₹0</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-xs">Weekly EMI</p>
+                            <h4 id="week-emi" class="text-xl font-bold text-purple-400">₹0</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-xs">Weekly Savings</p>
+                            <h4 id="week-savings" class="text-xl font-bold text-blue-400">₹0</h4>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="glass-card rounded-xl p-4">
+                            <h4 class="font-semibold mb-4">Weekly Breakdown</h4>
+                            <div class="chart-container">
+                                <canvas id="weekly-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card rounded-xl p-4">
+                            <h4 class="font-semibold mb-4">Financial Suggestions</h4>
+                            <div id="weekly-suggestions" class="space-y-3">
+                                <div class="glass-card p-3 rounded-lg border-l-4 border-blue-500">
+                                    <p class="text-sm">Complete your expense analysis to get personalized suggestions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Report View -->
+            <div id="view-monthly-report" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">Monthly Report</h2>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="glass-card rounded-lg p-4">
+                            <p class="text-gray-400 text-xs">Total Expense</p>
+                            <h4 id="month-expense" class="text-xl font-bold">₹0</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <p class="text-gray-400 text-xs">EMI Summary</p>
+                            <h4 id="month-emi" class="text-xl font-bold text-purple-400">₹0</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <p class="text-gray-400 text-xs">Savings Ratio</p>
+                            <h4 id="month-savings-ratio" class="text-xl font-bold text-blue-400">0%</h4>
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <p class="text-gray-400 text-xs">Life Cost Index</p>
+                            <h4 id="month-lci" class="text-xl font-bold gradient-text">0</h4>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-6 mb-6">
+                        <h4 class="font-semibold mb-4">12-Month Savings Projection</h4>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="savings-projection-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card rounded-xl p-6">
+                            <h4 class="font-semibold mb-4">Emergency Fund Calculator</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm text-gray-400">Monthly Expenses</label>
+                                    <input type="number" id="emergency-expense" class="input-field w-full px-3 py-2 rounded-lg mt-1" readonly>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400">Recommended Emergency Fund (6 months)</label>
+                                    <div id="emergency-fund" class="text-2xl font-bold text-green-400 mt-1">₹0</div>
+                                </div>
+                                <div>
+                                    <label class="text-sm text-gray-400">Current Savings Coverage</label>
+                                    <div class="mt-2 h-3 bg-gray-700 rounded-full overflow-hidden">
+                                        <div id="emergency-coverage" class="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all" style="width: 0%"></div>
+                                    </div>
+                                    <p id="emergency-months" class="text-xs text-gray-400 mt-1">0 months covered</p>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="glass-card rounded-xl p-6">
+                            <h4 class="font-semibold mb-4">Risk Classification</h4>
+                            <div id="month-risk-details" class="space-y-3">
+                                <div class="flex items-center gap-3 p-3 glass-card rounded-lg">
+                                    <i class="fas fa-info-circle text-blue-400"></i>
+                                    <span class="text-sm">Complete your profile to see risk analysis</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Comparison View -->
+             
+            <div id="view-city-comparison" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">City Comparison</h2>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">City 1</label>
+                            <select id="comp-city1" class="input-field w-full px-4 py-3 rounded-lg" onchange="updateCityComparison()">
+                                <option value="mumbai">Mumbai</option>
+                                <option value="delhi" selected>Delhi</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="pune">Pune</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">City 2</label>
+                            <select id="comp-city2" class="input-field w-full px-4 py-3 rounded-lg" onchange="updateCityComparison()">
+                                <option value="mumbai" selected>Mumbai</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="pune">Pune</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                            </select>
+                        </div>
+                    </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div>
+        <label class="block text-xs font-medium mb-1 text-gray-400">Monthly Salary (City 1)</label>
+        <input type="number" id="salary-city1" class="input-field w-full px-4 py-2 rounded-lg" value="100000" oninput="updateCityComparison()">
+    </div>
+    <div>
+        <label class="block text-xs font-medium mb-1 text-gray-400">Monthly Salary (City 2)</label>
+        <input type="number" id="salary-city2" class="input-field w-full px-4 py-2 rounded-lg" value="120000" oninput="updateCityComparison()">
+    </div>
+</div>
+                    <div class="glass-card rounded-xl overflow-hidden mb-6">
+                        <table class="w-full text-sm">
+                            <thead class="bg-blue-600/20">
+                                <tr>
+                                    <th class="p-4 text-left">Category</th>
+                                    <th id="th-city1" class="p-4 text-center">Delhi</th>
+                                    <th id="th-city2" class="p-4 text-center">Mumbai</th>
+                                    <th class="p-4 text-center">Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-table-body">
+                                <!-- Filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="glass-card rounded-xl p-4">
+                            <h4 class="font-semibold mb-4">Category Comparison</h4>
+                            <div class="chart-container">
+                                <canvas id="city-radar-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="glass-card rounded-xl p-4">
+                            <h4 class="font-semibold mb-4">Required Salary Difference</h4>
+                            <div class="chart-container">
+                                <canvas id="city-bar-chart"></canvas>
+                            </div>
+                            <div id="salary-diff-summary" class="mt-4 p-4 glass-card rounded-lg text-center">
+                                <p class="text-gray-400 text-sm">Select cities to compare required salaries</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-6 mt-6">
+                        <h4 class="font-semibold mb-4">Affordability Ranking</h4>
+                        <div id="affordability-ranking" class="space-y-2">
+                            <!-- Filled dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forecast Lab View -->
+            <div id="view-forecast-lab" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">Forecast Lab</h2>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="glass-card rounded-lg p-4">
+                            <label class="block text-sm font-medium mb-3">Salary Growth % (Annual)</label>
+                            <input type="range" id="forecast-salary-growth" min="0" max="20" value="5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb" oninput="updateForecast()">
+                            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                <span>0%</span>
+                                <span id="forecast-salary-val">5%</span>
+                                <span>20%</span>
+                            </div>
+                        </div>
+                        <div class="glass-card rounded-lg p-4">
+                            <label class="block text-sm font-medium mb-3">Inflation % (Annual)</label>
+                            <input type="range" id="forecast-inflation" min="0" max="15" value="6" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb" oninput="updateForecast()">
+                            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                <span>0%</span>
+                                <span id="forecast-inflation-val">6%</span>
+                                <span>15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="glass-card rounded-lg p-4 flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">Add New Child</p>
+                                <p class="text-xs text-gray-400">Increases expenses by ~₹15,000/month</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="forecast-child" class="sr-only peer" onchange="updateForecast()">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">Add New Loan (₹10L @ 10%)</p>
+                                <p class="text-xs text-gray-400">Adds ~₹10,000/month EMI</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="forecast-loan" class="sr-only peer" onchange="updateForecast()">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-6 mb-6">
+                        <h4 class="font-semibold mb-4">5-Year Savings Projection</h4>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="forecast-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-sm">Projected 5-Year Savings</p>
+                            <h3 id="forecast-total-savings" class="text-2xl font-bold text-green-400">₹0</h3>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-sm">Risk Probability</p>
+                            <h3 id="forecast-risk" class="text-2xl font-bold text-yellow-400">Low</h3>
+                        </div>
+                        <div class="glass-card rounded-lg p-4 text-center">
+                            <p class="text-gray-400 text-sm">Financial Independence</p>
+                            <h3 id="forecast-fi" class="text-2xl font-bold text-blue-400">15 Years</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant View -->
+            <div id="view-ai-assistant" class="hidden space-y-6 fade-in h-[calc(100vh-140px)]">
+    <div class="glass-card rounded-xl p-6 h-full flex flex-col">
+        <h2 class="text-2xl font-bold mb-4 gradient-text">AI Financial Assistant</h2>
+       
+        <div id="chat-container" class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2 scroll-hide">
+            <div class="chat-message flex gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-white"></i>
+                </div>
+                <div class="glass-card rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+                    <p class="text-sm">Hello! I'm your AI Financial Assistant. I can help you with:</p>
+                    <ul class="text-xs text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                        <li>Analyzing affordability across Indian cities</li>
+                        <li>Comparing cost of living</li>
+                        <li>Suggesting savings improvements</li>
+                        <li>Warning about EMI stress</li>
+                        <li>Simulating salary changes</li>
+                    </ul>
+                    <p class="text-sm mt-3">What would you like to know?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <input type="text"
+                   id="chat-input"
+                   class="input-field flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white outline-none focus:border-cyan-500/50 transition-all"
+                   placeholder="Ask me about your finances..."
+                   onkeypress="if(event.key==='Enter') sendChatMessage()">
+           
+            <button onclick="sendChatMessage()" class="btn-primary px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:opacity-90 transition-all">
+                <i class="fas fa-paper-plane text-white"></i>
+            </button>
+        </div>
+       
+        <div class="flex gap-2 mt-3 overflow-x-auto pb-2 scroll-hide">
+            <button onclick="quickAsk('Compare Mumbai vs Bangalore costs')" class="text-xs glass-card px-3 py-2 rounded-full whitespace-nowrap hover:bg-blue-500/20 text-gray-300 border border-white/5">Compare Mumbai vs Bangalore</button>
+            <button onclick="quickAsk('Is my EMI ratio healthy?')" class="text-xs glass-card px-3 py-2 rounded-full whitespace-nowrap hover:bg-blue-500/20 text-gray-300 border border-white/5">Check EMI Health</button>
+            <button onclick="quickAsk('How to save more?')" class="text-xs glass-card px-3 py-2 rounded-full whitespace-nowrap hover:bg-blue-500/20 text-gray-300 border border-white/5">Savings Tips</button>
+            <button onclick="quickAsk('Can I afford a car?')" class="text-xs glass-card px-3 py-2 rounded-full whitespace-nowrap hover:bg-blue-500/20 text-gray-300 border border-white/5">Affordability Check</button>
+        </div>
+    </div>
+</div>
+            <!-- Profile View -->
+            <div id="view-profile" class="hidden space-y-6 fade-in">
+                <div class="glass-card rounded-xl p-6">
+                    <h2 class="text-2xl font-bold mb-6 gradient-text">Profile Settings</h2>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Full Name</label>
+                            <input type="text" id="profile-name" class="input-field w-full px-4 py-3 rounded-lg" >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="profile-email" class="input-field w-full px-4 py-3 rounded-lg" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Monthly Income (₹)</label>
+                            <input type="number" id="profile-income" class="input-field w-full px-4 py-3 rounded-lg" placeholder="Enter monthly income" onchange="updateUserIncome()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Current City</label>
+                            <select id="profile-city" class="input-field w-full px-4 py-3 rounded-lg">
+                                <option value="mumbai">Mumbai</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="bangalore">Bangalore</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="pune">Pune</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 glass-card rounded-lg bg-blue-500/10 border-blue-500/30">
+                        <h4 class="font-semibold mb-2 flex items-center gap-2">
+                            <i class="fas fa-info-circle text-blue-400"></i>
+                            Account Information
+                        </h4>
+                        <p class="text-sm text-gray-400">Your data is stored locally in this session. For a production app, this would sync with a secure cloud database.</p>
+                    </div>
+
+                    <button onclick="saveProfile()" class="btn-primary w-full py-3 rounded-lg font-semibold mt-6">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global State
+        let currentUser = null;
+        let userData = {
+            income: 50000,
+            city: 'mumbai',
+            expenses: {},
+            emis: []
+        };
+       
+        // Numbeo Dataset Simulation for Indian Cities
+        const cityData = {
+            mumbai: {
+                name: 'Mumbai',
+                rentInside: 35000,
+                rentOutside: 22000,
+                utilities: 3500,
+                transportPublic: 1200,
+                transportPrivate: 6000,
+                food: {
+                    milk: 65,
+                    bread: 40,
+                    rice: 120,
+                    eggs: 80,
+                    chicken: 280,
+                    veg: 400,
+                    fruit: 600,
+                    water: 30,
+                    restaurant: 800,
+                    coffee: 150
+                },
+                healthcare: 2500,
+                education: 8000,
+                entertainment: 4000,
+                index: 85
+            },
+            delhi: {
+                name: 'Delhi',
+                rentInside: 28000,
+                rentOutside: 18000,
+                utilities: 3200,
+                transportPublic: 1000,
+                transportPrivate: 5500,
+                food: {
+                    milk: 60,
+                    bread: 35,
+                    rice: 110,
+                    eggs: 75,
+                    chicken: 260,
+                    veg: 350,
+                    fruit: 550,
+                    water: 25,
+                    restaurant: 700,
+                    coffee: 130
+                },
+                healthcare: 2200,
+                education: 7000,
+                entertainment: 3500,
+                index: 78
+            },
+            bangalore: {
+                name: 'Bangalore',
+                rentInside: 25000,
+                rentOutside: 16000,
+                utilities: 2800,
+                transportPublic: 1100,
+                transportPrivate: 5000,
+                food: {
+                    milk: 58,
+                    bread: 38,
+                    rice: 115,
+                    eggs: 78,
+                    chicken: 270,
+                    veg: 380,
+                    fruit: 580,
+                    water: 28,
+                    restaurant: 750,
+                    coffee: 140
+                },
+                healthcare: 2000,
+                education: 7500,
+                entertainment: 3800,
+                index: 75
+            },
+            chennai: {
+                name: 'Chennai',
+                rentInside: 18000,
+                rentOutside: 12000,
+                utilities: 2500,
+                transportPublic: 800,
+                transportPrivate: 4500,
+                food: {
+                    milk: 55,
+                    bread: 32,
+                    rice: 100,
+                    eggs: 70,
+                    chicken: 240,
+                    veg: 300,
+                    fruit: 450,
+                    water: 22,
+                    restaurant: 600,
+                    coffee: 100
+                },
+                healthcare: 1800,
+                education: 6000,
+                entertainment: 3000,
+                index: 65
+            },
+            hyderabad: {
+                name: 'Hyderabad',
+                rentInside: 20000,
+                rentOutside: 13000,
+                utilities: 2600,
+                transportPublic: 900,
+                transportPrivate: 4800,
+                food: {
+                    milk: 56,
+                    bread: 34,
+                    rice: 105,
+                    eggs: 72,
+                    chicken: 250,
+                    veg: 320,
+                    fruit: 480,
+                    water: 24,
+                    restaurant: 650,
+                    coffee: 110
+                },
+                healthcare: 1900,
+                education: 6500,
+                entertainment: 3200,
+                index: 68
+            },
+            pune: {
+                name: 'Pune',
+                rentInside: 22000,
+                rentOutside: 14000,
+                utilities: 2700,
+                transportPublic: 950,
+                transportPrivate: 5000,
+                food: {
+                    milk: 57,
+                    bread: 36,
+                    rice: 108,
+                    eggs: 74,
+                    chicken: 260,
+                    veg: 340,
+                    fruit: 500,
+                    water: 26,
+                    restaurant: 680,
+                    coffee: 120
+                },
+                healthcare: 1950,
+                education: 6800,
+                entertainment: 3400,
+                index: 70
+            },
+            kolkata: {
+                name: 'Kolkata',
+                rentInside: 15000,
+                rentOutside: 10000,
+                utilities: 2200,
+                transportPublic: 700,
+                transportPrivate: 4000,
+                food: {
+                    milk: 52,
+                    bread: 30,
+                    rice: 95,
+                    eggs: 68,
+                    chicken: 230,
+                    veg: 280,
+                    fruit: 420,
+                    water: 20,
+                    restaurant: 550,
+                    coffee: 90
+                },
+                healthcare: 1700,
+                education: 5500,
+                entertainment: 2800,
+                index: 60
+            },
+            ahmedabad: {
+                name: 'Ahmedabad',
+                rentInside: 16000,
+                rentOutside: 11000,
+                utilities: 2400,
+                transportPublic: 750,
+                transportPrivate: 4200,
+                food: {
+                    milk: 54,
+                    bread: 31,
+                    rice: 98,
+                    eggs: 69,
+                    chicken: 235,
+                    veg: 290,
+                    fruit: 440,
+                    water: 21,
+                    restaurant: 580,
+                    coffee: 95
+                },
+                healthcare: 1750,
+                education: 5800,
+                entertainment: 2900,
+                index: 62
+            }
+        };
+
+        // Chart Instances
+        let charts = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for saved session
+            const saved = localStorage.getItem('lifecostiq_user');
+            console.log(saved)
+            if (saved) {
+                const data = JSON.parse(saved);
+                currentUser = data.user;
+                userData = data.userData;
+                showDashboard();
+            }
+        });
+       
+
+        // Authentication Functions
+function toggleAuth(type) {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.add('hidden');
+    
+    if (type === 'login') {
+        document.getElementById('login-form').classList.remove('hidden');
+    } else {
+        document.getElementById('signup-form').classList.remove('hidden');
+    }
+}
+function populateExpenseAnalyzer() { 
+    console.log("IN populate function")
+    let storedUsers = JSON.parse(localStorage.getItem("users"));
+    // let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    let user = storedUsers.find(u => u.email === currentUser.email);
+    console.log(storedUsers);
+    console.log(currentUser);
+    console.log(user);
+    if (!user) return;
+    // let exp = user.expenses;
+
+    document.getElementById("exp-city").value = user.city;
+    document.getElementById("exp-family").value = user.family_members;
+    document.getElementById("exp-kids").value = user.no_of_kids||0;
+    document.getElementById("exp-lifestyle").value = user.lifestyle_type ;
+    document.getElementById("exp-rent-location").value = user.rent_location ;
+    document.getElementById("exp-transport").value = user.transport_mode ;
+
+}
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    // 1. Try to load from localStorage first to see if a user exists
+    // const savedData = localStorage.getItem('lifecostiq_user');
+    // const parsed = savedData ? JSON.parse(savedData) : null;
+    
+    let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    console.log(storedUsers);
+    let userRecord = storedUsers.find(user => user.email === email);
+    console.log(userRecord);
+    if(userRecord){
+        if (userRecord.password === password) {
+            
+            // 5. LOAD EVERYTHING into global variables
+            // We use the data we just found in userRecord
+            currentUser = {
+                name: userRecord.name,
+                email: userRecord.email
+            };
+
+            userData = {
+                ...userData, // Keep default structures like the emis array
+                name: userRecord.name,
+                email: userRecord.email,
+                income: userRecord.income,
+                city: userRecord.city,
+                family_members: userRecord.family_members,
+                no_of_kids: userRecord.no_of_kids,
+                lifestyle_type:userRecord.lifestyle_type,
+                rent_location :userRecord.rent_location ,
+                transport_mode :userRecord.transport_mode ,
+                emis: userRecord.emis || []
+            };
+
+            // 6. SYNC UI: Update dropdowns so they don't show the wrong city
+            if (document.getElementById('exp-city')) {
+                document.getElementById('exp-city').value = userRecord.city;
+            }
+            if (document.getElementById('profile-city')) {
+                document.getElementById('profile-city').value = userRecord.city;
+            }
+
+            // 7. REFRESH & SHOW: load live city data then switch view
+            await loadCityAndRefresh(userRecord.city);
+            updateEMIDisplay();
+            saveSession();
+            showDashboard();
+            
+            console.log("Login Successful for:", userRecord.name);
+
+        }
+        else{
+            alert("Incorrect password");
+        }
+    }
+    else{
+        alert("User does not exist");
+    }
+    // if (parsed && parsed.userData && parsed.userData.email === email) {
+    //     // Use the signed-up data
+    //     userData = parsed.userData;
+    //     currentUser = parsed.user;
+    // } else {
+    //     // Fallback/Guest login logic
+    //     currentUser = {
+    //         name: email.split('@')[0],
+    //         email: email,
+    //         age: 28,
+    //         gender: 'male'
+    //     };
+    //     // Reset userData for new guest
+    //     userData.income = 0;
+    //     userData.city = '';
+    // }
+    updateExpenseAnalysis();
+
+    
+}
+
+function handleSignup(e) {
+    e.preventDefault();
+
+    // 1. Capture signup values
+    const name = document.getElementById('signup-name').value.trim();
+    const age = parseInt(document.getElementById('signup-age').value);
+    if (age < 18 || age > 100) { alert("Invalid age"); return; }
+
+    const email = document.getElementById('signup-email').value.trim();
+    const salary = parseInt(document.getElementById('signup-salary').value) || 0;
+    if (salary < 0) { alert("Invalid salary"); return; }
+
+    const cityValue = document.getElementById('signup-city').value;
+    if (!cityValue) { alert("Please select a city"); return; }
+
+    const password = document.getElementById('signup-password').value;
+    if (!password) { alert("Please enter a password"); return; }
+
+    // 2. Check duplicate email
+    let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    if (storedUsers.some(u => u.email === email)) {
+        alert("An account with this email already exists. Please log in.");
+        return;
+    }
+
+    // 3. Update global state
+    currentUser = { name, email };
+    userData = {
+        ...userData,
+        name, email,
+        income: salary,
+        city: cityValue
+    };
+
+    // 4. Sync UI dropdowns
+    if (document.getElementById('exp-city'))     document.getElementById('exp-city').value = cityValue;
+    if (document.getElementById('profile-city')) document.getElementById('profile-city').value = cityValue;
+
+    // 5. Build & save new user record
+    const newEntry = {
+        name, email, password, age,
+        income: salary,
+        city: cityValue,
+        family_members: 2,
+        no_of_kids: 0,
+        lifestyle_type: 'medium',
+        rent_location: 'outside',
+        transport_mode: 'public',
+        emis: [],
+        expenses: {}
+    };
+    storedUsers.push(newEntry);
+    localStorage.setItem("users", JSON.stringify(storedUsers));
+
+    // 6. Load city data from API then go to dashboard
+    loadCityAndRefresh(cityValue).catch(() => {}).finally(() => {
+        saveSession();
+        showDashboard();
+    });
+}
+
+function saveProfile() {
+    const name = document.getElementById('profile-name').value;
+    const email = document.getElementById('profile-email').value;
+    const income = document.getElementById('profile-income').value;
+    const city = document.getElementById('profile-city').value;
+    // Update the userData object from the profile inputs
+    userData.income = income // parseInt(document.getElementById('profile-income').value) || 0;
+    userData.city = city // document.getElementById('profile-city').value;
+    
+    let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    // find user by email
+    let userIndex = storedUsers.findIndex(user => user.email === email);
+
+    if (userIndex !== -1) {
+        // update values
+        storedUsers[userIndex].name = name;
+        storedUsers[userIndex].income = income;
+        storedUsers[userIndex].city = city;
+
+        // save back to localStorage
+        localStorage.setItem("users", JSON.stringify(storedUsers));
+
+        alert("Profile updated successfully!");
+    } else {
+        alert("User not found!");
+    }
+
+
+    storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    console.log(storedUsers);
+    saveSession();
+   
+    // alert('Profile updated successfully!');
+   
+    // Refresh the dashboard to reflect the new income/city
+    updateDashboard();
+}
+function updateProfileUI() {
+    if (!currentUser) return;
+
+    // Mapping currentUser data to Profile IDs
+    document.getElementById('profile-name').value = currentUser.name;
+    document.getElementById('profile-email').value = currentUser.email;
+    document.getElementById('profile-income').value = currentUser.salary;
+   
+    // Update the City dropdown
+    const citySelect = document.getElementById('profile-city');
+    if (currentUser.city) {
+        citySelect.value = currentUser.city;
+    }
+}
+
+function showDashboard() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+           
+            document.getElementById('welcome-message').textContent = `Hi ${currentUser.name} 👋 Welcome back!`;
+            document.getElementById('profile-name').value = currentUser.name;
+            document.getElementById('profile-email').value = currentUser.email;
+            document.getElementById('profile-income').value = userData.income;
+            document.getElementById('profile-city').value = userData.city;
+           if (currentUser.salary < 0) {
+    alert("Please enter a valid salary.");
+    return;
+}
+            updateDashboard();
+            saveSession();
+        }
+function logout() {
+    // 1. Clear the session
+    localStorage.removeItem('lifecostiq_user');
+   
+    // 2. Reset the app state
+    currentUser = null;
+    userData = { emis: [], expenses: { total: 0 }, income: 0, city: '' };
+
+    // 3. Switch screens
+    document.getElementById('app-container').classList.add('hidden');
+    document.getElementById('auth-container').classList.remove('hidden');
+
+    // 4. Specifically show Login and hide Signup
+    // Adjust these IDs to match your HTML
+    if (document.getElementById('login-form')) {
+        document.getElementById('login-form').classList.remove('hidden');
+    }
+    if (document.getElementById('signup-form')) {
+        document.getElementById('signup-form').classList.add('hidden');
+    }
+   
+    // Optional: Refresh to clear all memory,
+    // but ensure your 'onLoad' logic defaults to the login page.
+    location.reload();
+}
+
+        function saveSession() {
+            // 1. Save the temporary session (Current Login State)
+            localStorage.setItem('lifecostiq_user', JSON.stringify({
+                user: currentUser,
+                userData: userData
+            }));
+
+            // 2. Permanent Storage: Update the main 'users' array
+            let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+            
+            // Find the user in the "database" by their email
+            const userIndex = storedUsers.findIndex(u => u.email === userData.email);
+
+            if (userIndex !== -1) {
+                // Sync all the current data (EMIs, income, city, etc.) back to that user
+                storedUsers[userIndex].emis = userData.emis;
+                storedUsers[userIndex].income = userData.income;
+                storedUsers[userIndex].city = userData.city;
+                
+                // Save the whole updated users list back to localStorage
+                localStorage.setItem("users", JSON.stringify(storedUsers));
+            }
+        }
+
+        // Navigation
+        function navigateTo(view) {
+            // Hide all views
+            document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
+           
+            // Show selected view
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+           
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.sidebar-item')?.classList.add('active');
+           
+            // Initialize view-specific content
+            if (view === 'dashboard') updateDashboard();
+            else if (view === 'expense-analyzer') initExpenseAnalyzer();
+            else if (view === 'emi-manager') updateEMIDisplay();
+            else if (view === 'weekly-report') generateWeeklyReport();
+            else if (view === 'monthly-report') generateMonthlyReport();
+            else if (view === 'city-comparison') updateCityComparison();
+            else if (view === 'forecast-lab') updateForecast();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Dashboard Functions
+        function updateDashboard() {
+            const totalEMI = userData.emis.reduce((sum, emi) => sum + emi.monthlyEMI, 0);
+            const monthlyExpense = calculateTotalExpense();
+            const savings = userData.income - monthlyExpense - totalEMI;
+           
+            // Update summary cards
+            document.getElementById('dash-income').textContent = formatCurrency(userData.income);
+            document.getElementById('dash-expense').textContent = formatCurrency(monthlyExpense);
+            document.getElementById('dash-emi').textContent = formatCurrency(totalEMI);
+            document.getElementById('dash-savings').textContent = formatCurrency(savings);
+           
+            // Update ratios
+            const emiRatio = (totalEMI / userData.income * 100).toFixed(1);
+            document.getElementById('dash-emi-ratio').textContent = `${emiRatio}% of income`;
+           
+            const savingsPct = (savings / userData.income * 100).toFixed(1);
+            document.getElementById('dash-savings-pct').textContent = `${savingsPct}% savings rate`;
+           
+            // Life Cost Index
+            const lci = (monthlyExpense / userData.income * 100).toFixed(1);
+            document.getElementById('dash-lci').textContent = lci;
+            document.getElementById('lci-bar').style.width = `${Math.min(lci, 100)}%`;
+           
+            // Health Score
+            const healthScore = calculateHealthScore();
+            document.getElementById('health-score').textContent = healthScore;
+           
+            let healthStatus = 'Poor';
+            let healthColor = 'text-red-400';
+            if (healthScore >= 80) { healthStatus = 'Excellent'; healthColor = 'text-green-400'; }
+            else if (healthScore >= 60) { healthStatus = 'Good'; healthColor = 'text-blue-400'; }
+            else if (healthScore >= 40) { healthStatus = 'Fair'; healthColor = 'text-yellow-400'; }
+           
+            const statusEl = document.getElementById('health-status');
+            statusEl.textContent = healthStatus;
+            statusEl.className = `text-sm font-medium ${healthColor}`;
+           
+            // Risk Classification
+            const riskEl = document.getElementById('risk-badge');
+            if (emiRatio > 50) {
+                riskEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm';
+                riskEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>High Risk</span>';
+            } else if (emiRatio > 30) {
+                riskEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm';
+                riskEl.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>Moderate Risk</span>';
+            } else {
+                riskEl.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm';
+                riskEl.innerHTML = '<i class="fas fa-check-circle"></i><span>Low Risk</span>';
+            }
+           
+            // Update header balance
+            document.getElementById('header-balance').textContent = formatCurrency(savings);
+           
+            // Render charts
+            renderDashboardCharts(monthlyExpense, totalEMI, savings);
+        }
+
+        function calculateHealthScore() {
+            const totalEMI = userData.emis.reduce((sum, emi) => sum + emi.monthlyEMI, 0);
+            const monthlyExpense = calculateTotalExpense();
+            const savings = userData.income - monthlyExpense - totalEMI;
+           
+            let score = 50;
+           
+            // EMI Ratio (ideal < 30%)
+            const emiRatio = totalEMI / userData.income;
+            if (emiRatio < 0.2) score += 20;
+            else if (emiRatio < 0.3) score += 10;
+            else if (emiRatio > 0.5) score -= 20;
+           
+            // Savings Rate (ideal > 20%)
+            const savingsRate = savings / userData.income;
+            if (savingsRate > 0.3) score += 20;
+            else if (savingsRate > 0.2) score += 10;
+            else if (savingsRate < 0) score -= 20;
+           
+            // Expense Ratio
+            const expenseRatio = monthlyExpense / userData.income;
+            if (expenseRatio < 0.5) score += 10;
+            else if (expenseRatio > 0.8) score -= 10;
+           
+            return Math.max(0, Math.min(100, score));
+        }
+
+        function renderDashboardCharts(expense, emi, savings) {
+            // Expense Pie Chart
+            const ctx1 = document.getElementById('expense-pie-chart').getContext('2d');
+            if (charts.pie) charts.pie.destroy();
+           
+            charts.pie = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Housing', 'Food', 'Transport', 'Utilities', 'Others'],
+                    datasets: [{
+                        data: [
+                            expense * 0.35,
+                            expense * 0.25,
+                            expense * 0.15,
+                            expense * 0.10,
+                            expense * 0.15
+                        ],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(139, 92, 246, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'white', font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+           
+            // Income vs Expense Bar Chart
+            const ctx2 = document.getElementById('income-expense-bar').getContext('2d');
+            if (charts.bar) charts.bar.destroy();
+           
+            charts.bar = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Income', 'Expenses', 'EMI', 'Savings'],
+                    datasets: [{
+                        label: 'Amount (₹)',
+                        data: [userData.income, expense, emi, savings],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(59, 130, 246, 0.8)'
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+           
+            // Health Gauge
+            const ctx3 = document.getElementById('health-gauge').getContext('2d');
+            if (charts.gauge) charts.gauge.destroy();
+           
+            const healthScore = calculateHealthScore();
+            charts.gauge = new Chart(ctx3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Score', 'Remaining'],
+                    datasets: [{
+                        data: [healthScore, 100 - healthScore],
+                        backgroundColor: [
+                            healthScore > 60 ? 'rgba(16, 185, 129, 0.8)' : healthScore > 40 ? 'rgba(245, 158, 11, 0.8)' : 'rgba(239, 68, 68, 0.8)',
+                            'rgba(255, 255, 255, 0.1)'
+                        ],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
+
+        // Expense Analyzer Functions
+        function initExpenseAnalyzer() {
+            const city = cityData[userData.city];
+            // Pre-select user's registered city in the dropdown
+            const expCityEl = document.getElementById('exp-city');
+            if (expCityEl && userData.city) expCityEl.value = userData.city;
+            // Update the city info banner
+            const cityNameEl = document.getElementById('city-info-name');
+            if (cityNameEl && userData.city) {
+                cityNameEl.textContent = userData.city.charAt(0).toUpperCase() + userData.city.slice(1);
+            }
+            document.getElementById('housing-rent').value = city.rentInside;
+            updateExpenseAnalysis();
+        }
+
+function updateExpenseAnalysis() {
+    let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    let userIndex = storedUsers.findIndex(i_user => i_user.email === currentUser.email);
+    const cityKey = document.getElementById('exp-city').value;
+    storedUsers[userIndex].city = cityKey;
+    // Keep userData and banner in sync
+    userData.city = cityKey;
+    const cityNameEl = document.getElementById('city-info-name');
+    if (cityNameEl) cityNameEl.textContent = cityKey.charAt(0).toUpperCase() + cityKey.slice(1);
+    const city = cityData[cityKey];
+    const family = parseInt(document.getElementById('exp-family').value)||storedUsers[userIndex].family_members ;
+    //const kids = parseInt(document.getElementById('exp-kids').value)||storedUsers[userIndex].no_of_kids||0;
+    //if(document.getElementById('exp-kids').value==0){
+    //    kids=0;
+    //}
+    // 1. Use 'let' instead of 'const' so you can change the value later
+    // 2. We get the value from the input first
+    let kidsInput = document.getElementById('exp-kids').value;
+
+    // 3. Logic: If input is empty, use saved data. If input is '0', use 0.
+    let kids = (kidsInput === "") 
+        ? (storedUsers[userIndex].no_of_kids || 0) 
+        : parseInt(kidsInput);
+
+    // Ensure it doesn't stay as NaN if parseInt fails
+    if (isNaN(kids)) kids = 0;
+    const lifestyle = document.getElementById('exp-lifestyle').value||storedUsers[userIndex].lifestyle_type ;
+    const rentLocation = document.getElementById('exp-rent-location').value||storedUsers[userIndex].rent_location ;
+    const transport = document.getElementById('exp-transport').value||storedUsers[userIndex].transport_mode ;
+
+    const totalPeople = family + kids;
+    const lifestyleMult = lifestyle === 'basic' ? 0.7 : lifestyle === 'luxury' ? 1.5 : 1;
+
+    // --- 1. DYNAMIC FOOD QUANTITIES ---
+    const baseFood = {
+        'milk': 15, 'bread': 10, 'rice': 2, 'eggs': 4, 'chicken': 2,
+        'veg': 6, 'fruit': 4, 'water': 15, 'restaurant': 4, 'coffee': 8
+    };
+    const foodMultiplier = family + (kids * 0.7);
+    Object.keys(baseFood).forEach(item => {
+        const el = document.getElementById(`food-${item}`);
+        if (el) el.value = Math.ceil(baseFood[item] * foodMultiplier);
+    });
+
+    // --- 2. DYNAMIC HOUSING (1BHK to 5BHK Logic) ---
+    let rentLabel = "Rent (1BHK Apartment)";
+    let rentMult = 1.0;
+    let maintBase = 2000;
+
+    if (totalPeople >= 8) {
+        rentLabel = "Rent (5BHK Apartment)";
+        rentMult = 3.5;  // 5BHKs are high-end/luxury
+        maintBase = 12000;
+    } else if (totalPeople >= 6) {
+        rentLabel = "Rent (4BHK Apartment)";
+        rentMult = 2.6;
+        maintBase = 8500;
+    } else if (totalPeople > 4) {
+        rentLabel = "Rent (3BHK Apartment)";
+        rentMult = 1.8;
+        maintBase = 5000;
+    } else if (totalPeople > 2) {
+        rentLabel = "Rent (2BHK Apartment)";
+        rentMult = 1.4;
+        maintBase = 3500;
+    }
+
+    // Apply lifestyle adjustment to Rent (Luxury lifestyle = better societies)
+    if (lifestyle === 'luxury') {
+        rentMult *= 1.3;
+        maintBase *= 1.5;
+    }
+
+    document.getElementById('rent-label').innerText = rentLabel;
+    const baseCityRent = rentLocation === 'inside' ? city.rentInside : city.rentOutside;
+    document.getElementById('housing-rent').value = Math.ceil(baseCityRent * rentMult);
+    document.getElementById('housing-maint').value = Math.ceil(maintBase);
+
+    // --- 3. DYNAMIC UTILITIES ---
+    document.getElementById('util-electric').value = Math.ceil(1500 + (totalPeople - 1) * 800 * lifestyleMult);
+    document.getElementById('util-water').value = Math.ceil(400 + (totalPeople - 1) * 200);
+    document.getElementById('util-internet').value = totalPeople > 5 ? 2000 : (totalPeople > 2 ? 1200 : 800);
+
+    // --- 4. DYNAMIC TRANSPORT ---
+    if (transport === 'public') {
+        document.getElementById('trans-public').value = city.transportPublic * family;
+        document.getElementById('trans-fuel').value = 0;
+    } else {
+        document.getElementById('trans-public').value = 0;
+        // Private fuel scales with more people (assumes larger car/more trips)
+        document.getElementById('trans-fuel').value = Math.ceil(city.transportPrivate * (1 + (totalPeople - 1) * 0.2));
+    }
+
+    // --- 5. OTHERS ---
+    document.getElementById('exp-healthcare').value = Math.ceil(1500 * (family + kids * 0.5));
+    document.getElementById('exp-education').value = kids * (lifestyle === 'luxury' ? 15000 : 6000);
+    document.getElementById('exp-entertainment').value = Math.ceil(2500 * lifestyleMult * (1 + (totalPeople - 1) * 0.3));
+
+    // --- 6. FINAL TOTALS ---
+    let foodTotal = 0;
+    Object.keys(baseFood).forEach(item => {
+        const qty = parseInt(document.getElementById(`food-${item}`).value) || 0;
+        foodTotal += qty * (city.food[item] || 50);
+    });
+    foodTotal *= lifestyleMult;
+
+    const housingTotal = parseInt(document.getElementById('housing-rent').value) +
+                         parseInt(document.getElementById('housing-maint').value);
+
+    const transportTotal = parseInt(document.getElementById('trans-public').value) +
+                           parseInt(document.getElementById('trans-fuel').value);
+
+    const othersTotal = parseInt(document.getElementById('util-electric').value) +
+                        parseInt(document.getElementById('util-water').value) +
+                        parseInt(document.getElementById('util-internet').value) +
+                        parseInt(document.getElementById('exp-healthcare').value) +
+                        parseInt(document.getElementById('exp-education').value) +
+                        parseInt(document.getElementById('exp-entertainment').value);
+
+    const grandTotal = foodTotal + housingTotal + transportTotal + othersTotal;
+
+    // Update Display
+    document.getElementById('exp-total').textContent = formatCurrency(grandTotal);
+    document.getElementById('exp-total-food').textContent = formatCurrency(foodTotal);
+    document.getElementById('exp-total-housing').textContent = formatCurrency(housingTotal);
+    document.getElementById('exp-total-transport').textContent = formatCurrency(transportTotal);
+    document.getElementById('exp-total-others').textContent = formatCurrency(othersTotal);
+
+    
+    
+
+    if (userIndex !== -1) {
+        // update values
+        storedUsers[userIndex].family_members = family;
+        storedUsers[userIndex].no_of_kids = kids;
+        storedUsers[userIndex].lifestyle_type = lifestyle;
+        storedUsers[userIndex].rent_location = rentLocation;
+        storedUsers[userIndex].transport_mode = transport;
+
+        // save back to localStorage
+        localStorage.setItem("users", JSON.stringify(storedUsers));
+    } else {
+        alert("User not found!");
+    }
+    // ... (your existing display code) ...
+
+    // THE KEY SYNC LINE:
+    userData.monthlyExpenses = grandTotal; 
+    console.log(storedUsers);
+
+    // Refresh dashboard to reflect the change
+    updateEMIDisplay();
+   
+}
+
+        function saveExpenses() {
+
+
+            const total = updateExpenseAnalysis();
+            userData.expenses[userData.city] = total;
+            userData.city = document.getElementById('exp-city').value;
+            saveSession();
+           
+            // Show success message
+            alert('Expenses saved to dashboard!');
+            navigateTo('dashboard');
+        }
+
+        function calculateTotalExpense() {
+            // Returns the precise grandTotal from the analyzer, 
+            // or 0 if the analyzer hasn't run yet.
+            return userData.monthlyExpenses || 0;
+        }
+        
+
+        // EMI Manager Functions
+        function addEMI() {
+            const type = document.getElementById('emi-type').value;
+            const principal = parseFloat(document.getElementById('emi-principal').value);
+            const rate = parseFloat(document.getElementById('emi-rate').value);
+            const tenure = parseInt(document.getElementById('emi-tenure').value);
+           
+            if (!principal || !rate || !tenure) {
+                alert('Please fill all fields');
+                return;
+            }
+           
+            // Calculate EMI
+            const monthlyRate = rate / 12 / 100;
+            const months = tenure * 12;
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+           
+            const emiData = {
+                id: Date.now(),
+                type,
+                principal,
+                rate,
+                tenure,
+                monthlyEMI: Math.round(emi),
+                remainingMonths: months
+            };
+           
+            userData.emis.push(emiData);
+            saveSession();
+            updateEMIDisplay();
+           
+            // Clear inputs
+            document.getElementById('emi-principal').value = '';
+            document.getElementById('emi-rate').value = '';
+            document.getElementById('emi-tenure').value = '';
+        }
+
+        function removeEMI(id) {
+            userData.emis = userData.emis.filter(emi => emi.id !== id);
+            saveSession();
+            updateEMIDisplay();
+        }
+
+function updateEMIDisplay() {
+    const list = document.getElementById('emi-list');
+    list.innerHTML = '';
+    
+    let totalEMI = 0;
+    
+    // 1. Render the Loan List
+    // 1. Render the Loan List (REPLACE ONLY THIS LOOP)
+    userData.emis.forEach(emi => {
+        totalEMI += emi.monthlyEMI;
+        
+        const item = document.createElement('div');
+        item.className = 'glass-card rounded-lg p-4 flex flex-wrap justify-between items-center gap-4 fade-in mb-3 border-l-4 border-blue-500';
+        item.innerHTML = `
+            <div class="flex-1 min-w-[150px]">
+                <h4 class="font-semibold capitalize text-blue-400">${emi.type} Loan</h4>
+                <div class="flex items-center gap-1">
+                    <span class="text-xs text-gray-400">Principal: ₹</span>
+                    <input type="number" value="${emi.principal}"
+                        onchange="editEMI(${emi.id}, 'principal', this.value)"
+                        class="bg-transparent border-b border-white/10 text-xs text-gray-300 w-24 outline-none focus:border-blue-400 focus:text-white transition-all">
+                </div>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <div class="text-center">
+                    <p class="text-[10px] uppercase text-gray-500">Rate (%)</p>
+                    <input type="number" step="0.1" value="${emi.rate}"
+                        onchange="editEMI(${emi.id}, 'rate', this.value)"
+                        class="bg-white/10 border border-white/20 rounded px-1 w-16 text-center text-white outline-none focus:border-blue-400">
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] uppercase text-gray-500">Years</p>
+                    <input type="number" value="${emi.tenure}"
+                        onchange="editEMI(${emi.id}, 'tenure', this.value)"
+                        class="bg-white/10 border border-white/20 rounded px-1 w-12 text-center text-white outline-none focus:border-blue-400">
+                </div>
+            </div>
+
+            <div class="text-right min-w-[100px]">
+                <p class="text-xs text-gray-400">Monthly EMI</p>
+                <p class="font-bold text-lg text-white">₹${emi.monthlyEMI.toLocaleString()}</p>
+            </div>
+            
+            <button onclick="removeEMI(${emi.id})" class="text-red-400 hover:text-red-300 p-2">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        list.appendChild(item);
+    });
+
+    if (userData.emis.length === 0) {
+        list.innerHTML = '<div class="text-center text-gray-400 py-8">No EMIs added yet</div>';
+    }
+
+    // --- 2. CALCULATE FINANCIAL SUMMARY ---
+    const otherExpenses = calculateTotalExpense(); 
+    const totalOutflow = totalEMI + otherExpenses;
+    const income = userData.income || 0;
+    const monthlySavings = income - totalOutflow;
+
+    // --- 3. UPDATE UI ELEMENTS ---
+    
+    // Monthly Expense Card
+    const dashExpElement = document.getElementById('dash-expense');
+    if (dashExpElement) dashExpElement.textContent = formatCurrency(otherExpenses);
+
+    // EMI Total Card
+    document.getElementById('emi-total-display').textContent = formatCurrency(totalEMI);
+
+    // Savings Card Logic
+    const savingsElement = document.getElementById('dash-savings');
+    if (savingsElement) {
+        savingsElement.textContent = formatCurrency(monthlySavings);
+        // Turn red if negative, green if positive
+        savingsElement.className = monthlySavings < 0 
+            ? 'text-2xl font-bold text-red-500' 
+            : 'text-2xl font-bold text-green-400';
+    }
+
+    // --- 4. RATIO & STRESS GAUGE ---
+    // Ratio now includes both Loan and Lifestyle costs for better accuracy
+    const ratio = income > 0 ? ((totalOutflow / income) * 100).toFixed(1) : 0;
+    document.getElementById('emi-ratio-display').textContent = ratio + '%';
+    
+    updateStressIndicator(ratio);
+    renderEMITimeline();
+}
+function editEMI(id, field, value) {
+    const emi = userData.emis.find(e => e.id === id);
+    if (!emi) return;
+
+    // Update the value (Principal, Rate, or Tenure)
+    emi[field] = parseFloat(value) || 0;
+
+    // Recalculate the monthly payment
+    const monthlyRate = emi.rate / 12 / 100;
+    const months = emi.tenure * 12;
+
+    if (monthlyRate > 0) {
+        emi.monthlyEMI = Math.round(
+            emi.principal * monthlyRate * Math.pow(1 + monthlyRate, months) / 
+            (Math.pow(1 + monthlyRate, months) - 1)
+        );
+    } else {
+        emi.monthlyEMI = Math.round(emi.principal / (months || 1));
+    }
+
+    saveSession();
+    updateEMIDisplay(); // This re-runs your original code to update Savings/Ratio
+}
+
+// Small helper to keep updateEMIDisplay clean
+function updateStressIndicator(ratio) {
+    const stressEl = document.getElementById('emi-stress');
+    if (ratio < 20) {
+        stressEl.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full emi-stress-low text-white';
+        stressEl.innerHTML = '<span class="w-3 h-3 rounded-full bg-white"></span><span>Low Stress</span>';
+    } else if (ratio < 40) {
+        stressEl.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full emi-stress-medium text-white';
+        stressEl.innerHTML = '<span class="w-3 h-3 rounded-full bg-white"></span><span>Moderate</span>';
+    } else {
+        stressEl.className = 'inline-flex items-center gap-2 px-4 py-2 rounded-full emi-stress-high text-white';
+        stressEl.innerHTML = '<span class="w-3 h-3 rounded-full bg-white"></span><span>High Stress!</span>';
+    }
+}
+
+        function renderEMITimeline() {
+            const ctx = document.getElementById('emi-timeline-chart').getContext('2d');
+            if (charts.emiTimeline) charts.emiTimeline.destroy();
+           
+            const labels = [];
+            const data = [];
+            let balance = userData.emis.reduce((sum, emi) => sum + emi.principal, 0);
+            const monthlyPayment = userData.emis.reduce((sum, emi) => sum + emi.monthlyEMI, 0);
+           
+            for (let i = 0; i <= 5; i++) {
+                labels.push(`Year ${i}`);
+                data.push(Math.max(0, balance));
+                balance -= monthlyPayment * 12;
+            }
+           
+            charts.emiTimeline = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Outstanding Debt',
+                        data,
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.7)',
+                                callback: value => '₹' + (value/100000).toFixed(1) + 'L'
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Weekly Report
+        function generateWeeklyReport() {
+            const monthlyExpense = calculateTotalExpense();
+            const totalEMI = userData.emis.reduce((sum, emi) => sum + emi.monthlyEMI, 0);
+            const weeklyIncome = userData.income / 4;
+            const weeklyExpense = monthlyExpense / 4;
+            const weeklyEMI = totalEMI / 4;
+            const weeklySavings = weeklyIncome - weeklyExpense - weeklyEMI;
+           
+            document.getElementById('week-income').textContent = formatCurrency(weeklyIncome);
+            document.getElementById('week-expense').textContent = formatCurrency(weeklyExpense);
+            document.getElementById('week-emi').textContent = formatCurrency(weeklyEMI);
+            document.getElementById('week-savings').textContent = formatCurrency(weeklySavings);
+           
+            // Weekly chart
+            const ctx = document.getElementById('weekly-chart').getContext('2d');
+            if (charts.weekly) charts.weekly.destroy();
+           
+            charts.weekly = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: [weeklyIncome, weeklyIncome, weeklyIncome, weeklyIncome],
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)'
+                        },
+                        {
+                            label: 'Expense',
+                            data: [weeklyExpense, weeklyExpense, weeklyExpense, weeklyExpense],
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+           
+            // Suggestions
+            const suggestions = [];
+            if (weeklySavings < 0) {
+                suggestions.push({ text: 'Your weekly expenses exceed income. Consider reducing discretionary spending.', color: 'red' });
+            } else if (weeklySavings < weeklyIncome * 0.1) {
+                suggestions.push({ text: 'Your savings buffer is thin. Try to increase savings to at least 20% of income.', color: 'yellow' });
+            } else {
+                suggestions.push({ text: 'Great job! You have a healthy weekly savings rate.', color: 'green' });
+            }
+           
+            if (totalEMI / userData.income > 0.4) {
+                suggestions.push({ text: 'EMI burden is high. Consider debt consolidation or prepayment.', color: 'red' });
+            }
+           
+            const suggContainer = document.getElementById('weekly-suggestions');
+            suggContainer.innerHTML = suggestions.map(s => `
+                <div class="glass-card p-3 rounded-lg border-l-4 ${s.color === 'red' ? 'border-red-500' : s.color === 'yellow' ? 'border-yellow-500' : 'border-green-500'}">
+                    <p class="text-sm">${s.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // Monthly Report
+        function generateMonthlyReport() {
+            const monthlyExpense = calculateTotalExpense();
+            const totalEMI = userData.emis.reduce((sum, emi) => sum + emi.monthlyEMI, 0);
+            const savings = userData.income - monthlyExpense - totalEMI;
+            const savingsRatio = (savings / userData.income * 100).toFixed(1);
+            const lci = (monthlyExpense / userData.income * 100).toFixed(1);
+           
+            document.getElementById('month-expense').textContent = formatCurrency(monthlyExpense);
+            document.getElementById('month-emi').textContent = formatCurrency(totalEMI);
+            document.getElementById('month-savings-ratio').textContent = savingsRatio + '%';
+            document.getElementById('month-lci').textContent = lci;
+           
+            // Emergency fund
+            document.getElementById('emergency-expense').value = monthlyExpense + totalEMI;
+            const emergencyFund = (monthlyExpense + totalEMI) * 6;
+            document.getElementById('emergency-fund').textContent = formatCurrency(emergencyFund);
+           
+            const coverage = Math.min(100, (savings * 12 / emergencyFund * 100));
+            document.getElementById('emergency-coverage').style.width = coverage + '%';
+            document.getElementById('emergency-months').textContent = `${(coverage / 100 * 6).toFixed(1)} months covered`;
+           
+            // Risk details
+            const riskContainer = document.getElementById('month-risk-details');
+            let riskHTML = '';
+           
+            if (lci > 80) {
+                riskHTML += `<div class="flex items-center gap-3 p-3 glass-card rounded-lg border-l-4 border-red-500"><i class="fas fa-exclamation-triangle text-red-400"></i><span class="text-sm">High Life Cost Index. Expenses consume >80% of income.</span></div>`;
+            } else if (lci > 60) {
+                riskHTML += `<div class="flex items-center gap-3 p-3 glass-card rounded-lg border-l-4 border-yellow-500"><i class="fas fa-info-circle text-yellow-400"></i><span class="text-sm">Moderate Life Cost Index. Monitor discretionary spending.</span></div>`;
+            } else {
+                riskHTML += `<div class="flex items-center gap-3 p-3 glass-card rounded-lg border-l-4 border-green-500"><i class="fas fa-check-circle text-green-400"></i><span class="text-sm">Healthy Life Cost Index. Good expense management.</span></div>`;
+            }
+           
+            riskContainer.innerHTML = riskHTML;
+           
+            // Savings projection
+            const ctx = document.getElementById('savings-projection-chart').getContext('2d');
+            if (charts.savingsProj) charts.savingsProj.destroy();
+           
+            const labels = [];
+            const data = [];
+            let accumulated = 0;
+           
+            for (let i = 1; i <= 12; i++) {
+                labels.push(`Month ${i}`);
+                accumulated += savings;
+                data.push(accumulated);
+            }
+           
+            charts.savingsProj = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Accumulated Savings',
+                        data,
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: 'rgba(255,255,255,0.7)',
+                                callback: value => '₹' + (value/1000).toFixed(0) + 'K'
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.7)' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // City Comparison
+        function updateCityComparison() {
+    // 1. Get Inputs
+    const city1 = document.getElementById('comp-city1').value;
+    const city2 = document.getElementById('comp-city2').value;
+   
+    // Get the salaries for both cities
+    // Ensure these IDs exist in your HTML: 'salary-city1' and 'salary-city2'
+    const salary1 = parseFloat(document.getElementById('salary-city1').value) || 0;
+    const salary2 = parseFloat(document.getElementById('salary-city2').value) || 0;
+
+    // 2. Update Headers
+    document.getElementById('th-city1').textContent = cityData[city1].name;
+    document.getElementById('th-city2').textContent = cityData[city2].name;
+
+    // 3. Build Comparison Table Rows
+    const tbody = document.getElementById('comparison-table-body');
+    const categories = [
+        { name: 'Rent (1BK Center)', key: 'rentInside' },
+        { name: 'Rent (1BK Outside)', key: 'rentOutside' },
+        { name: 'Utilities', key: 'utilities' },
+        { name: 'Public Transport', key: 'transportPublic' },
+        { name: 'Private Transport', key: 'transportPrivate' },
+        { name: 'Healthcare', key: 'healthcare' },
+        { name: 'Education', key: 'education' },
+        { name: 'Entertainment', key: 'entertainment' },
+        { name: 'Cost Index', key: 'index' }
+    ];
+
+    tbody.innerHTML = categories.map(cat => {
+        const val1 = cityData[city1][cat.key];
+        const val2 = cityData[city2][cat.key];
+        const diffPct = (((val2 - val1) / val1) * 100).toFixed(1);
+        const diffColor = val2 > val1 ? 'text-red-400' : val2 < val1 ? 'text-green-400' : 'text-gray-400';
+        const diffIcon = val2 > val1 ? '↑' : val2 < val1 ? '↓' : '-';
+
+        return `
+            <tr class="city-comparison-row border-b border-gray-700">
+                <td class="p-4">${cat.name}</td>
+                <td class="p-4 text-center">₹${val1.toLocaleString()}</td>
+                <td class="p-4 text-center">₹${val2.toLocaleString()}</td>
+                <td class="p-4 text-center ${diffColor}">${diffIcon} ${Math.abs(diffPct)}%</td>
+            </tr>
+        `;
+    }).join('');
+
+    // 4. Calculate Net Savings for both cities
+    // We use index * 600 as a base multiplier for general living expenses
+    const expense1 = (cityData[city1].index * 600) + cityData[city1].rentInside;
+    const expense2 = (cityData[city2].index * 600) + cityData[city2].rentInside;
+
+    const savings1 = salary1 - expense1;
+    const savings2 = salary2 - expense2;
+    const savingsDiff = savings2 - savings1;
+
+    // 5. Update Salary & Savings Summary
+    document.getElementById('salary-diff-summary').innerHTML = `
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <p class="text-gray-400 text-xs">Net Savings (${cityData[city1].name})</p>
+                <p class="font-bold ${savings1 > 0 ? 'text-green-400' : 'text-red-400'}">${formatCurrency(savings1)}</p>
+            </div>
+            <div>
+                <p class="text-gray-400 text-xs">Net Savings (${cityData[city2].name})</p>
+                <p class="font-bold ${savings2 > 0 ? 'text-green-400' : 'text-red-400'}">${formatCurrency(savings2)}</p>
+            </div>
+        </div>
+        <p class="text-gray-400 text-sm">Monthly Savings Difference:</p>
+        <h4 class="text-2xl font-bold ${savingsDiff >= 0 ? 'text-green-400' : 'text-red-400'} mt-1">
+            ${savingsDiff >= 0 ? '+' : '-'}${formatCurrency(savingsDiff)}
+        </h4>
+        <p class="text-xs text-gray-400 mt-1">${savingsDiff >= 0 ? 'Better' : 'Worse'} financial outcome in ${cityData[city2].name}</p>
+    `;
+
+    // 6. Radar Chart (Comparison of Cost Factors)
+    const ctxRadar = document.getElementById('city-radar-chart').getContext('2d');
+    if (charts.radar) charts.radar.destroy();
+    charts.radar = new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+            labels: ['Rent', 'Food', 'Transport', 'Utilities', 'Healthcare', 'Entertainment'],
+            datasets: [
+                {
+                    label: cityData[city1].name,
+                    data: [cityData[city1].rentInside / 1000, cityData[city1].food.restaurant * 10, cityData[city1].transportPublic * 2, cityData[city1].utilities / 100, cityData[city1].healthcare / 100, cityData[city1].entertainment / 100],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)'
+                },
+                {
+                    label: cityData[city2].name,
+                    data: [cityData[city2].rentInside / 1000, cityData[city2].food.restaurant * 10, cityData[city2].transportPublic * 2, cityData[city2].utilities / 100, cityData[city2].healthcare / 100, cityData[city2].entertainment / 100],
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)'
+                }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: 'rgba(255,255,255,0.7)' } } } }
+    });
+
+    // 7. Bar Chart (Savings Comparison)
+    const ctxBar = document.getElementById('city-bar-chart').getContext('2d');
+    if (charts.cityBar) charts.cityBar.destroy();
+    charts.cityBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: [cityData[city1].name, cityData[city2].name],
+            datasets: [{
+                label: 'Monthly Savings',
+                data: [savings1, savings2],
+                backgroundColor: ['rgba(59, 130, 246, 0.8)', 'rgba(139, 92, 246, 0.8)'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { color: 'rgba(255,255,255,0.7)', callback: v => '₹' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                x: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // 8. Affordability Ranking
+    const sortedCities = Object.entries(cityData).sort((a, b) => a[1].index - b[1].index);
+    document.getElementById('affordability-ranking').innerHTML = sortedCities.map((c, i) => `
+        <div class="flex items-center justify-between p-3 glass-card rounded-lg ${c[0] === city1 || c[0] === city2 ? 'border border-blue-500/30' : ''}">
+            <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold">${i + 1}</span>
+                <span>${c[1].name}</span>
+            </div>
+            <span class="text-sm text-gray-400">Index: ${c[1].index}</span>
+        </div>
+    `).join('');
+}
+           
+           
+
+        // Forecast Lab
+        function updateForecast() {
+    const salaryGrowth = parseInt(document.getElementById('forecast-salary-growth').value);
+    const inflation = parseInt(document.getElementById('forecast-inflation').value);
+    const addChild = document.getElementById('forecast-child').checked;
+    const addLoan = document.getElementById('forecast-loan').checked;
+   
+    document.getElementById('forecast-salary-val').textContent = salaryGrowth + '%';
+    document.getElementById('forecast-inflation-val').textContent = inflation + '%';
+   
+    // Using current selected city (City 1 as primary reference)
+    const city1Key = document.getElementById('comp-city1').value;
+    const citySalary = parseFloat(document.getElementById('salary-city1').value) || 0;
+   
+    let currentExpense = (cityData[city1Key].index * 600) + cityData[city1Key].rentInside;
+    let emi = userData.emis.reduce((sum, e) => sum + e.monthlyEMI, 0);
+   
+    const labels = [];
+    const savingsData = [];
+    let accumulatedSavings = 0;
+    let runningIncome = citySalary;
+    let runningExpense = currentExpense;
+
+    if (addChild) runningExpense += 15000;
+    if (addLoan) emi += 10000;
+   
+    for (let year = 0; year <= 5; year++) {
+        labels.push(`Year ${year}`);
+        if (year > 0) {
+            runningIncome *= (1 + salaryGrowth / 100);
+            runningExpense *= (1 + inflation / 100);
+        }
+        const yearlySavings = (runningIncome - runningExpense - emi) * 12;
+        accumulatedSavings += yearlySavings;
+        savingsData.push(accumulatedSavings);
+    }
+   
+    const ctxForecast = document.getElementById('forecast-chart').getContext('2d');
+    if (charts.forecast) charts.forecast.destroy();
+    charts.forecast = new Chart(ctxForecast, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Projected Wealth',
+                data: savingsData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { ticks: { color: 'rgba(255,255,255,0.7)', callback: v => '₹' + (v/100000).toFixed(1) + 'L' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                x: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { display: false } }
+            }
+        }
+    });
+   
+    document.getElementById('forecast-total-savings').textContent = formatCurrency(accumulatedSavings);
+   
+    const riskEl = document.getElementById('forecast-risk');
+    if (accumulatedSavings < 0) {
+        riskEl.textContent = 'High'; riskEl.className = 'text-2xl font-bold text-red-400';
+    } else if (accumulatedSavings < 500000) {
+        riskEl.textContent = 'Medium'; riskEl.className = 'text-2xl font-bold text-yellow-400';
+    } else {
+        riskEl.textContent = 'Low'; riskEl.className = 'text-2xl font-bold text-green-400';
+    }
+
+    const annualBurn = (runningExpense + emi) * 12;
+    const fiYears = annualBurn > 0 ? Math.ceil((annualBurn * 25) / (accumulatedSavings / 5)) : 0;
+    document.getElementById('forecast-fi').textContent = fiYears > 50 ? '50+ Years' : `${fiYears} Years`;
+}
+
+        // AI Assistant
+        // 1. Configuration - Use your Groq Key here
+const GROQ_API_KEY = "";
+
+async function fetchGroqResponse(message) {
+    const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+    const payload = {
+        model: "llama-3.3-70b-versatile", // High-performance Groq model
+        messages: [
+            {
+                role: "system",
+                content: "You are a helpful financial assistant for an Indian user. Provide concise, practical advice regarding Indian markets, savings, and cost of living."
+            },
+            {
+                role: "user",
+                content: message
+            }
+        ],
+        temperature: 0.7
+    };
+
+    const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_API_KEY}`
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Groq Error Details:", errorData);
+        throw new Error("Failed to connect to Groq");
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+// 2. UI Integration
+async function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const container = document.getElementById('chat-container');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // Add User Message to UI
+    appendMessage('user', message);
+    input.value = '';
+
+    // Add Loading State
+    const loadingId = 'loading-' + Date.now();
+    appendMessage('bot', 'Thinking...', loadingId);
+
+    try {
+        const aiResponse = await fetchGroqResponse(message);
+        // Replace loading text with actual response
+        document.getElementById(loadingId).querySelector('p').innerText = aiResponse;
+    } catch (error) {
+        document.getElementById(loadingId).querySelector('p').innerText =
+            "Connection error. Please check your Groq API key and internet.";
+        console.error(error);
+    }
+   
+    // Auto-scroll to bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+// Helper function to render bubbles
+function appendMessage(role, text, id = null) {
+    const container = document.getElementById('chat-container');
+    const isBot = role === 'bot';
+   
+    const html = `
+        <div class="chat-message flex gap-3 ${isBot ? '' : 'flex-row-reverse'}" ${id ? `id="${id}"` : ''}>
+            <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isBot ? 'bg-gradient-to-br from-cyan-500 to-blue-600' : 'bg-gray-600'}">
+                <i class="fas ${isBot ? 'fa-robot' : 'fa-user'} text-white"></i>
+            </div>
+            <div class="glass-card rounded-2xl p-4 max-w-[80%] ${isBot ? 'rounded-tl-none' : 'rounded-tr-none bg-blue-500/10'}">
+                <p class="text-sm">${text}</p>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', html);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Support for the Suggestion Buttons
+function quickAsk(text) {
+    document.getElementById('chat-input').value = text;
+    sendChatMessage();
+}
+
+        // ─── Cost-of-Living API Integration ───────────────────────────────
+
+        // Called when user picks a city in the signup dropdown
+        async function previewCityData(cityName) {
+            if (!cityName) return;
+            const previewBox  = document.getElementById('city-preview');
+            const previewName = document.getElementById('city-preview-name');
+            const previewLoad = document.getElementById('city-preview-loading');
+            const previewData = document.getElementById('city-preview-data');
+            const previewSrc  = document.getElementById('city-preview-source');
+
+            previewBox.style.display  = 'block';
+            previewLoad.style.display = 'block';
+            previewData.innerHTML     = '';
+            previewName.textContent   = cityName.charAt(0).toUpperCase() + cityName.slice(1);
+
+            const apiData = await fetchCityDataFromAPI(cityName);
+            previewLoad.style.display = 'none';
+
+            const rows = [];
+            if (apiData && apiData.length > 0) {
+                previewSrc.textContent = '📡 Live data';
+                apiData.slice(0, 8).forEach(item => {
+                    rows.push(`<div class="flex justify-between py-1 border-b border-white/5">
+                        <span class="text-gray-300">${item.item || item.name}</span>
+                        <strong class="text-blue-300">₹${Number(item.cost || item.value || 0).toFixed(0)}</strong>
+                    </div>`);
+                });
+            } else {
+                previewSrc.textContent = '📦 Local estimate';
+                const local = cityData[cityName];
+                if (local) {
+                    const items = [
+                        ['Rent (City Centre)', local.rentInside],
+                        ['Rent (Outside)', local.rentOutside],
+                        ['Utilities', local.utilities],
+                        ['Public Transport', local.transportPublic],
+                        ['Milk (1L)', local.food.milk],
+                        ['Chicken (1kg)', local.food.chicken],
+                        ['Restaurant meal', local.food.restaurant],
+                        ['Vegetables/wk', local.food.veg],
+                    ];
+                    items.forEach(([label, val]) => {
+                        rows.push(`<div class="flex justify-between py-1 border-b border-white/5">
+                            <span class="text-gray-300">${label}</span>
+                            <strong class="text-blue-300">₹${Number(val).toLocaleString()}</strong>
+                        </div>`);
+                    });
+                } else {
+                    rows.push(`<span class="text-gray-500 col-span-2">No data available for this city.</span>`);
+                }
+            }
+            previewData.innerHTML = rows.join('');
+        }
+
+        // Fetch live city costs from the local API server
+        async function fetchCityDataFromAPI(cityName) {
+            try {
+                const API_BASE = 'http://localhost:3000';
+                const res = await fetch(`${API_BASE}/${encodeURIComponent(cityName)}?INR`);
+                if (!res.ok) throw new Error('Bad response');
+                const data = await res.json();
+                return data && Array.isArray(data.costs) && data.costs.length > 0 ? data.costs : null;
+            } catch (err) {
+                console.warn('API unavailable, using local data:', err.message);
+                return null;
+            }
+        }
+
+        // Called after login/signup — fetches API data and refreshes the whole app
+        async function loadCityAndRefresh(cityName) {
+            const apiData = await fetchCityDataFromAPI(cityName);
+            const key = cityName.toLowerCase();
+            if (apiData && apiData.length > 0) {
+                cityData[key] = mapAPIDataToCityData(apiData, key);
+                console.log(`✅ Live API data loaded for ${cityName}`);
+            } else {
+                console.log(`⚠️ Using local data for ${cityName}`);
+            }
+            userData.city = key;
+            if (document.getElementById('exp-city'))     document.getElementById('exp-city').value = key;
+            if (document.getElementById('profile-city')) document.getElementById('profile-city').value = key;
+        }
+
+        // Maps the API array into your existing cityData shape
+        function mapAPIDataToCityData(apiItems, cityKey) {
+            const base = cityData[cityKey]
+                ? JSON.parse(JSON.stringify(cityData[cityKey]))
+                : JSON.parse(JSON.stringify(cityData['mumbai']));
+
+            apiItems.forEach(item => {
+                const name = (item.item || item.name || '').toLowerCase();
+                const cost = parseFloat(item.cost || item.value) || 0;
+                if (!cost) return;
+                if (name.includes('milk'))                                      base.food.milk        = cost;
+                if (name.includes('bread'))                                     base.food.bread       = cost;
+                if (name.includes('rice'))                                      base.food.rice        = cost;
+                if (name.includes('egg'))                                       base.food.eggs        = cost;
+                if (name.includes('chicken'))                                   base.food.chicken     = cost;
+                if (name.includes('restaurant') && name.includes('inexpensive')) base.food.restaurant = cost;
+                if (name.includes('water') && name.includes('bottle'))         base.food.water       = cost;
+                if (name.includes('cappuccino') || name.includes('coffee'))    base.food.coffee      = cost;
+                if (name.includes('transport') || name.includes('ticket'))     base.transportPublic  = cost;
+                if (name.includes('electric') || name.includes('utility'))     base.utilities        = cost;
+                if (name.includes('apartment') && name.includes('centre'))     base.rentInside       = cost;
+                if (name.includes('apartment') && name.includes('outside'))    base.rentOutside      = cost;
+            });
+            return base;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+
+        // Profile Functions
+        function updateUserIncome() {
+            userData.income = parseInt(document.getElementById('profile-income').value) || 50000;
+        }
+
+        // Utility Functions
+        function formatCurrency(amount) {
+            if (amount >= 100000) {
+                return '₹' + (amount / 100000).toFixed(2) + 'L';
+            } else if (amount >= 1000) {
+                return '₹' + (amount / 1000).toFixed(1) + 'K';
+            }
+            return '₹' + amount.toLocaleString();
+        }
+// At the bottom of your script
+async function fetchAndPopulateCities() {
+    try {
+        const res = await fetch('http://localhost:3000/cities');
+        if (!res.ok) throw new Error('Failed to fetch cities');
+        const data = await res.json();
+        if (!data.cities) return;
+        const cities = data.cities;
+        
+        const selectIds = ['signup-city', 'exp-city', 'comp-city1', 'comp-city2', 'profile-city'];
+        
+        selectIds.forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                const currentVal = select.value;
+                select.innerHTML = '<option value="" disabled selected>-- Select City --</option>' + 
+                                   cities.map(c => `<option value="${c.toLowerCase()}">${c}</option>`).join('');
+                
+                // Try to restore previous selection
+                if (currentVal && Array.from(select.options).some(o => o.value === currentVal.toLowerCase())) {
+                    select.value = currentVal.toLowerCase();
+                } else if (id === 'comp-city1' && cities.length > 0) {
+                    select.selectedIndex = 1; 
+                } else if (id === 'comp-city2' && cities.length > 1) {
+                    select.selectedIndex = 2; 
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Failed to load dynamic cities:', err);
+    }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    // 1. Fetch cities from backend and populate dropdowns
+    await fetchAndPopulateCities();
+
+    // 2. Initialize user session
+    const savedData = localStorage.getItem('lifecostiq_user');
+   
+    if (savedData) {
+        const parsed = JSON.parse(savedData);
+        currentUser = parsed.user;
+        userData = parsed.userData;
+        showDashboard();
+    } else {
+        // No user found? Ensure we are on the LOGIN form, not Signup
+        document.getElementById('auth-container').classList.remove('hidden');
+        document.getElementById('app-container').classList.add('hidden');
+        showAuthForm('login');
+    }
+});
+
+// Helper function to toggle between Login and Signup
+function showAuthForm(type) {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+   
+    if (type === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+    } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+    }
+}
+    </script>
+</body>
+</html>
