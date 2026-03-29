@@ -2870,7 +2870,7 @@ function quickAsk(text) {
         // Fetch live city costs from the local API server
         async function fetchCityDataFromAPI(cityName) {
             try {
-                const API_BASE = 'http://localhost:3000';
+                const API_BASE = 'https://cost-of-living-1.onrender.com';
                 const res = await fetch(`${API_BASE}/${encodeURIComponent(cityName)}?INR`);
                 if (!res.ok) throw new Error('Bad response');
                 const data = await res.json();
@@ -2941,7 +2941,7 @@ function quickAsk(text) {
 // At the bottom of your script
 async function fetchAndPopulateCities() {
     try {
-        const res = await fetch('http://localhost:3000/cities');
+        const res = await fetch('https://cost-of-living-1.onrender.com/cities');
         if (!res.ok) throw new Error('Failed to fetch cities');
         const data = await res.json();
         if (!data.cities) return;
