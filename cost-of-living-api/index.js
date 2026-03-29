@@ -72,7 +72,7 @@ app.get('/:city', async (req, res) => {
   return res.json({ city, currency, costs });
 });
 
-app.get('*', (req, res) =>
+app.use((req, res) =>
   res.status(400).json({
     error: 'No city supplied. Please navigate to `/:city` to obtain results.',
   }),
