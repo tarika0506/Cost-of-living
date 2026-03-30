@@ -1,4 +1,3 @@
-<!-- trigger -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2501,10 +2500,31 @@ function updateStressIndicator(ratio) {
 
 
         // City Comparison
-        function updateCityComparison() {
+        async function updateCityComparison() {
     // 1. Get Inputs
     const city1 = document.getElementById('comp-city1').value;
     const city2 = document.getElementById('comp-city2').value;
+
+    if (!city1 || !city2) return;
+
+    // Dynamically fetch and map chosen cities if not already cached
+    const compButton1 = document.getElementById('comp-city1');
+    const compButton2 = document.getElementById('comp-city2');
+    
+    // Add simple loading indicator
+    compButton1.disabled = true; compButton2.disabled = true;
+
+    if (!cityData[city1]) {
+        const d1 = await fetchCityDataFromAPI(city1);
+        if (d1) cityData[city1] = mapAPIDataToCityData(d1, city1);
+    }
+    if (!cityData[city2]) {
+        const d2 = await fetchCityDataFromAPI(city2);
+        if (d2) cityData[city2] = mapAPIDataToCityData(d2, city2);
+    }
+    
+    compButton1.disabled = false; compButton2.disabled = false;
+    if (!cityData[city1] || !cityData[city2]) return;
    
     // Get the salaries for both cities
     // Ensure these IDs exist in your HTML: 'salary-city1' and 'salary-city2'
@@ -2546,32 +2566,33 @@ function updateStressIndicator(ratio) {
         `;
     }).join('');
 
-    // 4. Calculate Net Savings for both cities
+    // 4. Calculate Required Salary Difference for both cities
     // We use index * 600 as a base multiplier for general living expenses
     const expense1 = (cityData[city1].index * 600) + cityData[city1].rentInside;
     const expense2 = (cityData[city2].index * 600) + cityData[city2].rentInside;
 
-    const savings1 = salary1 - expense1;
-    const savings2 = salary2 - expense2;
-    const savingsDiff = savings2 - savings1;
+    const requiredSalary2 = expense1 > 0 ? (salary1 * (expense2 / expense1)) : salary2;
+    const reqDiff = requiredSalary2 - salary1;
 
-    // 5. Update Salary & Savings Summary
+    // 5. Update Salary & Requivalency Summary
     document.getElementById('salary-diff-summary').innerHTML = `
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
-                <p class="text-gray-400 text-xs">Net Savings (${cityData[city1].name})</p>
-                <p class="font-bold ${savings1 > 0 ? 'text-green-400' : 'text-red-400'}">${formatCurrency(savings1)}</p>
+                <p class="text-gray-400 text-xs text-center">Your Salary (${cityData[city1].name})</p>
+                <p class="font-bold text-blue-400 text-xl text-center">${formatCurrency(salary1)}</p>
             </div>
             <div>
-                <p class="text-gray-400 text-xs">Net Savings (${cityData[city2].name})</p>
-                <p class="font-bold ${savings2 > 0 ? 'text-green-400' : 'text-red-400'}">${formatCurrency(savings2)}</p>
+                <p class="text-gray-400 text-xs text-center">Required Salary (${cityData[city2].name})</p>
+                <p class="font-bold text-purple-400 text-xl text-center">${formatCurrency(requiredSalary2)}</p>
             </div>
         </div>
-        <p class="text-gray-400 text-sm">Monthly Savings Difference:</p>
-        <h4 class="text-2xl font-bold ${savingsDiff >= 0 ? 'text-green-400' : 'text-red-400'} mt-1">
-            ${savingsDiff >= 0 ? '+' : '-'}${formatCurrency(savingsDiff)}
-        </h4>
-        <p class="text-xs text-gray-400 mt-1">${savingsDiff >= 0 ? 'Better' : 'Worse'} financial outcome in ${cityData[city2].name}</p>
+        <div class="text-center">
+            <p class="text-gray-400 text-sm">To maintain your lifestyle in ${cityData[city2].name}, you need to earn:</p>
+            <h4 class="text-2xl font-bold ${reqDiff >= 0 ? 'text-green-400' : 'text-blue-400'} mt-1">
+                ${reqDiff >= 0 ? '+' : ''}${formatCurrency(reqDiff)}
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">${reqDiff >= 0 ? 'more' : 'less'} than your current salary</p>
+        </div>
     `;
 
     // 6. Radar Chart (Comparison of Cost Factors)
@@ -2599,16 +2620,16 @@ function updateStressIndicator(ratio) {
         options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: 'rgba(255,255,255,0.7)' } } } }
     });
 
-    // 7. Bar Chart (Savings Comparison)
+    // 7. Bar Chart (Required Salary Comparison)
     const ctxBar = document.getElementById('city-bar-chart').getContext('2d');
     if (charts.cityBar) charts.cityBar.destroy();
     charts.cityBar = new Chart(ctxBar, {
         type: 'bar',
         data: {
-            labels: [cityData[city1].name, cityData[city2].name],
+            labels: ['Current (' + cityData[city1].name + ')', 'Required (' + cityData[city2].name + ')'],
             datasets: [{
-                label: 'Monthly Savings',
-                data: [savings1, savings2],
+                label: 'Equivalent Salary Component',
+                data: [salary1, requiredSalary2],
                 backgroundColor: ['rgba(59, 130, 246, 0.8)', 'rgba(139, 92, 246, 0.8)'],
                 borderRadius: 8
             }]
