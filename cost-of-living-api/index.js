@@ -73,7 +73,7 @@ app.get('/:city', async (req, res) => {
 });
 
 app.use((req, res) =>
-  res.status(400).json({ 
+  res.status(400).json({
     error: 'No city supplied. Please navigate to `/:city` to obtain results.',
   }),
 );
