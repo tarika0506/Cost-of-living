@@ -45,11 +45,11 @@
         .gradient-text {
             /* 1. Define the colors (e.g., Blue to Purple) */
             background: linear-gradient(to right, #3b82f6, #8b5cf6);
-
+            
             /* 2. Clip the background to the text shape */
             background-clip: text;
             -webkit-background-clip: text;
-
+            
             /* 3. Make the actual text transparent so the colors show through */
             color: transparent;
         }
@@ -3080,7 +3080,7 @@
         async function fetchCityDataFromAPI(cityName) {
             try {
                 const API_BASE = 'https://cost-of-living2.onrender.com';
-                const res = await fetch(`${API_BASE}/${encodeURIComponent(cityName)}?INR`);
+                const res = await fetch(`http://localhost:3000/${cityKey}?INR`);
                 if (!res.ok) throw new Error('Bad response');
                 const data = await res.json();
                 return data && Array.isArray(data.costs) && data.costs.length > 0 ? data.costs : null;
