@@ -43,10 +43,14 @@
         }
 
         .gradient-text {
+            /* 1. Define the colors (e.g., Blue to Purple) */
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+
+            /* 2. Clip the background to the text shape */
             background-clip: text;
-            /* Standard property */
             -webkit-background-clip: text;
-            /* Vendor prefix for older browsers */
+
+            /* 3. Make the actual text transparent so the colors show through */
             color: transparent;
         }
 
