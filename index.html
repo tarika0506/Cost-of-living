@@ -3080,7 +3080,7 @@
         async function fetchCityDataFromAPI(cityName) {
             try {
                 const API_BASE = 'https://cost-of-living2.onrender.com';
-                const res = await fetch(`http://localhost:3000/${cityKey}?INR`);
+                const res = await fetch(`${API_BASE}/${cityName}?INR`);
                 if (!res.ok) throw new Error('Bad response');
                 const data = await res.json();
                 return data && Array.isArray(data.costs) && data.costs.length > 0 ? data.costs : null;
