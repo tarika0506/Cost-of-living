@@ -3152,7 +3152,7 @@
         // At the bottom of your script
         async function fetchAndPopulateCities() {
             try {
-                const res = await fetch('https://cost-of-living2.onrender.com/cities');
+                const res = await fetch('http://localhost:3000/cities');
                 if (!res.ok) throw new Error('Failed to fetch cities');
                 const data = await res.json();
                 if (!data.cities) return;
